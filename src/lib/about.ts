@@ -9,9 +9,6 @@ export type AboutStop = { time: string; title: string; desc: string; note: strin
 export type AboutListen = { cat: string; items: string[] };
 export type AboutChip = { label: string; text: string };
 
-/** 兴趣与热爱：一张卡通往站内一个真实模块 */
-export type AboutInterest = { name: string; tag: string; desc: string; href: string };
-
 /** 技术与创造：代表作，链到站内的作品页 */
 export type AboutProject = { name: string; desc: string; tech: string[]; href: string; cover: string };
 
@@ -23,7 +20,6 @@ export type AboutConfig = {
   intro: string;
   chips: AboutChip[];
   truths: AboutTruth[];
-  interests: AboutInterest[];
   now: AboutNow[];
   skills: AboutSkill[];
   projects: AboutProject[];
@@ -58,14 +54,6 @@ export const DEFAULT_ABOUT: AboutConfig = {
       title: '相信过程值得被记录，也相信认真做完一件小事的分量。',
       note: '不追求热闹，只希望多年以后打开这里，还能找到当时的痕迹。',
     },
-  ],
-  interests: [
-    { name: '技术', tag: 'AI · Web', desc: '把想法做成能跑、能看的东西。', href: '#tech' },
-    { name: '创作', tag: '写作 · 文案', desc: '写文章、写脚本，也写那些没长成文章的话。', href: '/writing' },
-    { name: '小说', tag: '连载', desc: '《跨界追夫》，一章一章往下写。', href: '/novels' },
-    { name: '影像', tag: '相册', desc: '散步时遇见的云、猫和倒影。', href: '/gallery' },
-    { name: '音乐', tag: '歌单', desc: '写不出东西时，翻出来听一遍的那几首。', href: '/music' },
-    { name: '阅读', tag: '随记', desc: '读到的句子、想通的道理，随手记一笔。', href: '/notes' },
   ],
   now: [
     { name: 'AIGC 漫剧', state: '推进中', note: '剧本、资产表、分镜表，一张一张往下排。白天干这个。' },
@@ -160,16 +148,6 @@ export function normalizeAbout(input: unknown): AboutConfig {
     intro: str(o.intro, d.intro),
     chips: pickList(o.chips, (r, dd) => ({ label: str(r.label, dd.label), text: str(r.text, dd.text) }), d.chips),
     truths: pickList(o.truths, (r, dd) => ({ title: str(r.title, dd.title), note: str(r.note, dd.note) }), d.truths),
-    interests: pickList(
-      o.interests,
-      (r, dd) => ({
-        name: str(r.name, dd.name),
-        tag: str(r.tag, dd.tag),
-        desc: str(r.desc, dd.desc),
-        href: str(r.href, dd.href),
-      }),
-      d.interests,
-    ),
     now: pickList(
       o.now,
       (r, dd) => ({ name: str(r.name, dd.name), state: str(r.state, dd.state), note: str(r.note, dd.note) }),

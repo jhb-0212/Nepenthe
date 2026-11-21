@@ -1025,61 +1025,7 @@
   .play-cover, .play-card-big .play-cover { aspect-ratio: 3 / 2; }
 }
 
-/* --- 兴趣与热爱：通往站内模块的卡片 --- */
-.interest-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
-}
-.interest-card {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 18px 18px 16px;
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  text-decoration: none;
-  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
-}
-.interest-card:hover {
-  border-color: var(--accent-light);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 22px rgba(40, 48, 44, 0.07);
-}
-.interest-top { display: flex; align-items: baseline; gap: 9px; flex-wrap: wrap; }
-.interest-name {
-  font-family: var(--serif);
-  font-weight: 900;
-  font-size: 17px;
-  color: var(--ink);
-  letter-spacing: 0.02em;
-}
-.interest-tag {
-  font-size: 11px;
-  letter-spacing: 0.06em;
-  color: var(--accent);
-  border: 1px solid var(--line);
-  border-radius: 20px;
-  padding: 1px 8px;
-  white-space: nowrap;
-}
-.interest-desc { margin: 0; font-size: 13.5px; line-height: 1.85; color: var(--dim); }
-.interest-go {
-  margin-top: auto;
-  font-family: var(--serif);
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  color: var(--faint);
-  transition: color 0.2s, letter-spacing 0.2s;
-}
-.interest-card:hover .interest-go { color: var(--accent); letter-spacing: 0.12em; }
-
-.listen-inline {
-  margin-top: 22px;
-  padding-top: 20px;
-  border-top: 1px dashed var(--line-2);
-}
+/* --- 听什么，看什么 --- */
 
 /* --- 技术与创造：代表作改由文章承接，这里只留一行入口 --- */
 .proj-link {
@@ -1127,11 +1073,7 @@
 .ab-note-end { margin: 18px 0 0; }
 .ab-note-end a { color: var(--accent); border-bottom: 1px dashed var(--line-2); text-decoration: none; }
 
-@media (max-width: 900px) {
-  .interest-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
 @media (max-width: 560px) {
-  .interest-grid { grid-template-columns: 1fr; }
   .story-p { font-size: 14.5px; }
 }
 

@@ -78,48 +78,29 @@ export default async function AboutPage() {
           </section>
         ) : null}
 
-        {/* ===== 兴趣与热爱（通往站内真实内容） ===== */}
-        {about.interests.length ? (
+        {/* ===== 听什么，看什么 ===== */}
+        {about.listens.length ? (
           <section className="about-section">
             <div className="ab-head">
               <span className="ab-label">{NUM[1]}</span>
-              <h2 className="ab-title">兴趣与热爱</h2>
+              <h2 className="ab-title">听什么，看什么</h2>
               <span className="ab-rule" />
             </div>
-            <div className="interest-grid">
-              {about.interests.map((it, i) => (
-                <Link key={`${it.name}-${i}`} className="interest-card" href={it.href}>
-                  <div className="interest-top">
-                    <span className="interest-name">{it.name}</span>
-                    {it.tag ? <span className="interest-tag">{it.tag}</span> : null}
+            <div className="listen-grid">
+              {about.listens.map((l, i) => (
+                <div key={`${l.cat}-${i}`} className="like-group">
+                  <div className="like-cat">{l.cat}</div>
+                  <div className="like-items">
+                    {l.items.map((item) => (
+                      <span key={item} className="like-item">
+                        {item}
+                      </span>
+                    ))}
                   </div>
-                  {it.desc ? <p className="interest-desc">{it.desc}</p> : null}
-                  <span className="interest-go" aria-hidden="true">
-                    去看看 →
-                  </span>
-                </Link>
+                </div>
               ))}
             </div>
-
-            {about.listens.length ? (
-              <div className="listen-inline">
-                <div className="listen-grid">
-                  {about.listens.map((l, i) => (
-                    <div key={`${l.cat}-${i}`} className="like-group">
-                      <div className="like-cat">{l.cat}</div>
-                      <div className="like-items">
-                        {l.items.map((item) => (
-                          <span key={item} className="like-item">
-                            {item}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                {about.listenNote ? <p className="listen-note">{about.listenNote}</p> : null}
-              </div>
-            ) : null}
+            {about.listenNote ? <p className="listen-note">{about.listenNote}</p> : null}
           </section>
         ) : null}
 
@@ -127,7 +108,7 @@ export default async function AboutPage() {
         {about.skills.length ? (
           <section className="about-section" id="tech">
             <div className="ab-head">
-              <span className="ab-label">{NUM[2]}</span>
+              <span className="ab-label">{NUM[1]}</span>
               <h2 className="ab-title">技术与创造</h2>
               <span className="ab-rule" />
             </div>
@@ -162,7 +143,7 @@ export default async function AboutPage() {
         {about.plays.length ? (
           <section className="about-section">
             <div className="ab-head">
-              <span className="ab-label">{NUM[3]}</span>
+              <span className="ab-label">{NUM[2]}</span>
               <h2 className="ab-title">玩什么</h2>
               <span className="ab-rule" />
             </div>
@@ -191,7 +172,7 @@ export default async function AboutPage() {
         {doingItems.length ? (
           <section className="about-section">
             <div className="ab-head">
-              <span className="ab-label">{NUM[4]}</span>
+              <span className="ab-label">{NUM[3]}</span>
               <h2 className="ab-title">正在做的事情</h2>
               <span className="ab-rule" />
             </div>
@@ -226,7 +207,7 @@ export default async function AboutPage() {
         {about.timeline.length ? (
           <section className="about-section">
             <div className="ab-head">
-              <span className="ab-label">{NUM[5]}</span>
+              <span className="ab-label">{NUM[4]}</span>
               <h2 className="ab-title">来路</h2>
               <span className="ab-rule" />
             </div>
@@ -249,7 +230,7 @@ export default async function AboutPage() {
         {about.story.paragraphs.length ? (
           <section className="about-section">
             <div className="ab-head">
-              <span className="ab-label">{NUM[6]}</span>
+              <span className="ab-label">{NUM[5]}</span>
               <h2 className="ab-title">关于忘忧居</h2>
               <span className="ab-rule" />
             </div>
@@ -267,7 +248,7 @@ export default async function AboutPage() {
         {/* ===== 联系我 ===== */}
         <section className="about-section about-outro">
           <div className="ab-head">
-            <span className="ab-label">{NUM[7]}</span>
+            <span className="ab-label">{NUM[6]}</span>
             <h2 className="ab-title">联系我</h2>
             <span className="ab-rule" />
           </div>

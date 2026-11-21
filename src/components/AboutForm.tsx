@@ -154,38 +154,12 @@ export default function AboutForm({ about: initial }: { about: AboutConfig }) {
         </button>
       </section>
 
-      {/* ---------- 兴趣与热爱 ---------- */}
+      {/* ---------- 听什么，看什么 ---------- */}
       <section className="abx-sec">
         <div className="abx-head">
-          <h3>贰 · 兴趣与热爱</h3>
-          <span>每张卡通往站内一个真实模块；链接可以写 /writing、/novels、/music，或 #tech 跳到本页下方</span>
+          <h3>贰 · 听什么，看什么</h3>
+          <span>两栏，标签用「、」隔开</span>
         </div>
-        {about.interests.map((it, i) => (
-          <div className="abx-row" key={i}>
-            <label>
-              名称
-              <input value={it.name} onChange={(e) => rowPatch('interests', i, { name: e.target.value })} />
-            </label>
-            <label>
-              小标签
-              <input value={it.tag} onChange={(e) => rowPatch('interests', i, { tag: e.target.value })} placeholder="AI · Web" />
-            </label>
-            <label className="grow">
-              一句说明
-              <input value={it.desc} onChange={(e) => rowPatch('interests', i, { desc: e.target.value })} />
-            </label>
-            <label>
-              链接
-              <input value={it.href} onChange={(e) => rowPatch('interests', i, { href: e.target.value })} placeholder="/writing" />
-            </label>
-            <RowTools k="interests" i={i} n={about.interests.length} />
-          </div>
-        ))}
-        <button type="button" className="abx-add" onClick={() => addRow('interests', { name: '', tag: '', desc: '', href: '' })}>
-          + 加一张卡
-        </button>
-
-        <div className="abx-sub">下面这两栏「常听 / 爱看」跟在兴趣卡片后面一起显示</div>
         {about.listens.map((l, i) => (
           <div className="abx-row" key={i}>
             <label>
@@ -214,7 +188,7 @@ export default function AboutForm({ about: initial }: { about: AboutConfig }) {
       {/* ---------- 技术与创造 ---------- */}
       <section className="abx-sec" id="tech">
         <div className="abx-head">
-          <h3>叁 · 技术与创造</h3>
+          <h3>贰 · 技术与创造</h3>
           <span>先一组工具，再几张代表作；标签用「、」隔开</span>
         </div>
         {about.skills.map((s, i) => (
@@ -260,7 +234,7 @@ export default function AboutForm({ about: initial }: { about: AboutConfig }) {
       {/* ---------- 玩什么 ---------- */}
       <section className="abx-sec">
         <div className="abx-head">
-          <h3>肆 · 玩什么</h3>
+          <h3>叁 · 玩什么</h3>
           <span>「大卡」占两张小卡的宽度，一般给花时间最多的两个</span>
         </div>
         <label>
@@ -313,7 +287,7 @@ export default function AboutForm({ about: initial }: { about: AboutConfig }) {
       {/* ---------- 正在做的事情（备用） ---------- */}
       <section className="abx-sec">
         <div className="abx-head">
-          <h3>伍 · 正在做的事情（备用条目）</h3>
+          <h3>肆 · 正在做的事情（备用条目）</h3>
           <span>优先显示「在做」表的数据；只有在「在做」表为空时，才用这里的条目顶上</span>
         </div>
         {about.now.map((n, i) => (
@@ -342,7 +316,7 @@ export default function AboutForm({ about: initial }: { about: AboutConfig }) {
       {/* ---------- 来路 ---------- */}
       <section className="abx-sec">
         <div className="abx-head">
-          <h3>陆 · 来路</h3>
+          <h3>伍 · 来路</h3>
           <span>时间线，最后一句写当时的心境</span>
         </div>
         {about.timeline.map((t, i) => (
@@ -374,7 +348,7 @@ export default function AboutForm({ about: initial }: { about: AboutConfig }) {
       {/* ---------- 关于忘忧居 ---------- */}
       <section className="abx-sec">
         <div className="abx-head">
-          <h3>柒 · 关于忘忧居</h3>
+          <h3>陆 · 关于忘忧居</h3>
           <span>这个小标题 + 几段话：为什么叫这个名字、这里放什么、希望它变成什么样</span>
         </div>
         <label>
