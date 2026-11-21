@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { guard } from '@/lib/admin';
 import { prisma } from '@/lib/prisma';
 
@@ -50,10 +49,7 @@ export default async function AdminStatsPage() {
           </small>
         </div>
         <div className="admin-actions">
-          <Link className="admin-btn" href="/admin">
-            回后台
-          </Link>
-        </div>
+          </div>
       </div>
 
       <p style={{ color: 'var(--faint)', fontSize: 12.5, marginTop: 14 }}>

@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { guard } from '@/lib/admin';
-import { logoutAction } from '@/actions/auth';
 import { getDashboard } from '@/lib/content';
 import { prisma } from '@/lib/prisma';
 import PublishButton from '@/components/PublishButton';
@@ -20,21 +19,16 @@ export default async function AdminPage() {
     <div className="admin-shell">
       <div className="admin-top">
         <div>
-          <h1>忘忧居 · 后台</h1>
+          <h1>控制台</h1>
           <small>
             已登录：{session.name} · Prisma + PostgreSQL 实时读写
           </small>
         </div>
         <div className="admin-actions">
           <PublishButton />
-          <Link className="admin-btn" href="/">
-            看站点
+          <Link className="admin-btn primary" href="/admin/posts/new">
+            写一篇
           </Link>
-          <form action={logoutAction}>
-            <button className="admin-btn" type="submit">
-              退出
-            </button>
-          </form>
         </div>
       </div>
 
@@ -55,49 +49,16 @@ export default async function AdminPage() {
         ))}
       </div>
 
-      <div className="admin-actions" style={{ marginBottom: 18 }}>
-        <Link className="admin-btn primary" href="/admin/posts/new">
-          写一篇
-        </Link>
-        <Link className="admin-btn" href="/admin/posts">
-          文章
-        </Link>
-        <Link className="admin-btn" href="/admin/notes">
-          随记
-        </Link>
-        <Link className="admin-btn" href="/admin/novels">
-          小说
-        </Link>
-        <Link className="admin-btn" href="/admin/gallery">
-          相册
-        </Link>
-        <Link className="admin-btn" href="/admin/music">
-          曲目
-        </Link>
-        <Link className="admin-btn" href="/admin/site">
-          站点设置
-        </Link>
-        <Link className="admin-btn" href="/admin/about">
-          关于页
-        </Link>
-        <Link className="admin-btn" href="/admin/pages">
-          页面文案
-        </Link>
-        <Link className="admin-btn" href="/admin/stats">
-          访问统计
-        </Link>
-        <Link className="admin-btn" href="/admin/wall">
-          留言审核{wallPending ? `（${wallPending}）` : ''}
-        </Link>
-        <a className="admin-btn" href="/api/admin/export" download>
-          导出 JSON
-        </a>
-        <a className="admin-btn" href="/api/admin/export/md" download>
-          导出 Markdown
-        </a>
-      </div>
+      {wallPending ? (
+        <div className="adm-todo">
+          <span>有 {wallPending} 条留言等你过目。</span>
+          <Link className="admin-btn" href="/admin/wall">
+            去审核
+          </Link>
+        </div>
+      ) : null}
 
-      <h2 style={{ fontSize: 16, margin: '24px 0 8px' }}>最近更新</h2>
+      <h2 className="adm-h2">最近更新</h2>
       <ul className="admin-list">
         {recent.map((p) => (
           <li key={p.id}>
@@ -114,7 +75,7 @@ export default async function AdminPage() {
 
       {jobs.length ? (
         <>
-          <h2 style={{ fontSize: 16, margin: '24px 0 8px' }}>发布记录</h2>
+          <h2 className="adm-h2">发布记录</h2>
           <ul className="admin-list">
             {jobs.map((j) => (
               <li key={j.id}>

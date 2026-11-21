@@ -20,10 +20,7 @@ export default async function AdminPagesPage() {
           <Link className="admin-btn" href="/writing" target="_blank">
             看文章页
           </Link>
-          <Link className="admin-btn" href="/admin">
-            回后台
-          </Link>
-        </div>
+          </div>
       </div>
 
       <PagesForm pages={pages} />

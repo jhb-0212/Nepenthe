@@ -20,10 +20,7 @@ export default async function AdminSitePage() {
           <Link className="admin-btn" href="/" target="_blank">
             看首页
           </Link>
-          <Link className="admin-btn" href="/admin">
-            回后台
-          </Link>
-        </div>
+          </div>
       </div>
 
       <SiteForm site={site} />

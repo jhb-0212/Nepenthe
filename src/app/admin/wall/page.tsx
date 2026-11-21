@@ -45,10 +45,7 @@ export default async function AdminWallPage() {
           <Link className="admin-btn" href="/wall" target="_blank">
             看留言墙
           </Link>
-          <Link className="admin-btn" href="/admin">
-            回后台
-          </Link>
-        </div>
+          </div>
       </div>
 
       <h2 style={{ fontSize: 16, margin: '26px 0 8px' }}>待审</h2>

@@ -21,10 +21,7 @@ export default async function AdminNotesPage() {
           <Link className="admin-btn primary" href="/admin/notes/new">
             写一条
           </Link>
-          <Link className="admin-btn" href="/admin">
-            回后台
-          </Link>
-        </div>
+          </div>
       </div>
 
       <ul className="admin-list">

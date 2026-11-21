@@ -27,10 +27,7 @@ export default async function AdminGalleryPage() {
           <Link className="admin-btn" href="/gallery" target="_blank">
             看相册
           </Link>
-          <Link className="admin-btn" href="/admin">
-            回后台
-          </Link>
-        </div>
+          </div>
       </div>
 
       <p style={{ color: 'var(--faint)', fontSize: 12.5, marginTop: 14 }}>

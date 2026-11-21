@@ -19,10 +19,7 @@ export default async function AdminPostsPage() {
           <Link className="admin-btn primary" href="/admin/posts/new">
             写一篇
           </Link>
-          <Link className="admin-btn" href="/admin">
-            回后台
-          </Link>
-        </div>
+          </div>
       </div>
 
       <ul className="admin-list">

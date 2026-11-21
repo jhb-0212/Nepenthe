@@ -24,10 +24,7 @@ export default async function AdminNovelsPage() {
           <Link className="admin-btn primary" href="/admin/novels/new">
             新建作品
           </Link>
-          <Link className="admin-btn" href="/admin">
-            回后台
-          </Link>
-        </div>
+          </div>
       </div>
 
       <ul className="admin-list">

@@ -23,10 +23,7 @@ export default async function AdminMusicPage() {
           <Link className="admin-btn" href="/music" target="_blank">
             看音乐页
           </Link>
-          <Link className="admin-btn" href="/admin">
-            回后台
-          </Link>
-        </div>
+          </div>
       </div>
 
       <p style={{ color: 'var(--faint)', fontSize: 12.5, marginTop: 14 }}>

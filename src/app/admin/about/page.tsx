@@ -20,10 +20,7 @@ export default async function AdminAboutPage() {
           <Link className="admin-btn" href="/about" target="_blank">
             看关于页
           </Link>
-          <Link className="admin-btn" href="/admin">
-            回后台
-          </Link>
-        </div>
+          </div>
       </div>
 
       <AboutForm about={about} />

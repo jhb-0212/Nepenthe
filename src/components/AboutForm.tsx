@@ -64,8 +64,19 @@ export default function AboutForm({ about: initial }: { about: AboutConfig }) {
         「正在做的事情」读的是「在做」表（<b>/admin/doing</b>），两边不必各写一份。
       </p>
 
+      <nav className="abx-index" aria-label="关于页分节">
+        <a href="#ab-open">开篇</a>
+        <a href="#ab-me">关于我</a>
+        <a href="#ab-listen">听什么看什么</a>
+        <a href="#ab-tech">技术与创造</a>
+        <a href="#ab-play">玩什么</a>
+        <a href="#ab-doing">正在做</a>
+        <a href="#ab-path">来路</a>
+        <a href="#ab-story">关于网站</a>
+      </nav>
+
       {/* ---------- 开篇 ---------- */}
-      <section className="abx-sec">
+      <section className="abx-sec" id="ab-open">
         <div className="abx-head">
           <h3>开篇</h3>
           <span>问候语、一段 80–120 字的自我介绍、三枚身份小签</span>
@@ -107,7 +118,7 @@ export default function AboutForm({ about: initial }: { about: AboutConfig }) {
       </section>
 
       {/* ---------- 关于我 ---------- */}
-      <section className="abx-sec">
+      <section className="abx-sec" id="ab-me">
         <div className="abx-head">
           <h3>壹 · 关于我</h3>
           <span>三行分别是身份、性格习惯、价值观；左正文，右括注</span>
@@ -132,7 +143,7 @@ export default function AboutForm({ about: initial }: { about: AboutConfig }) {
       </section>
 
       {/* ---------- 听什么，看什么 ---------- */}
-      <section className="abx-sec">
+      <section className="abx-sec" id="ab-listen">
         <div className="abx-head">
           <h3>贰 · 听什么，看什么</h3>
           <span>两栏，标签用「、」隔开</span>
@@ -163,7 +174,7 @@ export default function AboutForm({ about: initial }: { about: AboutConfig }) {
       </section>
 
       {/* ---------- 技术与创造 ---------- */}
-      <section className="abx-sec" id="tech">
+      <section className="abx-sec" id="ab-tech">
         <div className="abx-head">
           <h3>贰 · 技术与创造</h3>
           <span>先一组工具，再几张代表作；标签用「、」隔开</span>
@@ -209,7 +220,7 @@ export default function AboutForm({ about: initial }: { about: AboutConfig }) {
       </section>
 
       {/* ---------- 玩什么 ---------- */}
-      <section className="abx-sec">
+      <section className="abx-sec" id="ab-play">
         <div className="abx-head">
           <h3>叁 · 玩什么</h3>
           <span>「大卡」占两张小卡的宽度，一般给花时间最多的两个</span>
@@ -262,7 +273,7 @@ export default function AboutForm({ about: initial }: { about: AboutConfig }) {
       </section>
 
       {/* ---------- 正在做的事情（备用） ---------- */}
-      <section className="abx-sec">
+      <section className="abx-sec" id="ab-doing">
         <div className="abx-head">
           <h3>肆 · 正在做的事情（备用条目）</h3>
           <span>优先显示「在做」表的数据；只有在「在做」表为空时，才用这里的条目顶上</span>
@@ -291,7 +302,7 @@ export default function AboutForm({ about: initial }: { about: AboutConfig }) {
       </section>
 
       {/* ---------- 来路 ---------- */}
-      <section className="abx-sec">
+      <section className="abx-sec" id="ab-path">
         <div className="abx-head">
           <h3>伍 · 来路</h3>
           <span>时间线，最后一句写当时的心境</span>
@@ -323,7 +334,7 @@ export default function AboutForm({ about: initial }: { about: AboutConfig }) {
       </section>
 
       {/* ---------- 关于忘忧居 ---------- */}
-      <section className="abx-sec">
+      <section className="abx-sec" id="ab-story">
         <div className="abx-head">
           <h3>陆 · 关于忘忧居</h3>
           <span>这个小标题 + 几段话：为什么叫这个名字、这里放什么、希望它变成什么样</span>
