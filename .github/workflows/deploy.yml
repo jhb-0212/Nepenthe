@@ -12,7 +12,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  IMAGE: ghcr.io/${{ github.repository }}/web
+  IMAGE: ghcr.io/jhb-0212/nepenthe/web
 
 jobs:
   ci:
