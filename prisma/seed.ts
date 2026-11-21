@@ -224,7 +224,6 @@ async function seedSite() {
     tracks: [],
     doing: [],
     facts: raw.facts ?? [],
-    featuredProjects: raw.featuredProjects ?? [],
   } as unknown as Prisma.InputJsonObject;
 
   await prisma.siteSetting.upsert({

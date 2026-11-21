@@ -1,5 +1,3 @@
 @import '../styles/global.css';
 @import '../styles/extra.css';
 @import '../styles/live.css';
-/* 首页改版 v1.1 的新样式：只放 hero__ / home- / work- 等新结构，最后加载 */
-@import '../styles/home.css';
