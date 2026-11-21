@@ -61,21 +61,29 @@ export default function AboutForm({ about: initial }: { about: AboutConfig }) {
 
       <p className="abx-tip">
         这一页的每一行文字、每张配图都能在这里改，保存后前台 <b>/about</b> 直接生效，不用改代码也不用重新构建。
-        个人的三段自我介绍还在「站点设置 → 个人简介」里。
+        「正在做的事情」读的是「在做」表（<b>/admin/doing</b>），两边不必各写一份。
       </p>
 
       {/* ---------- 开篇 ---------- */}
       <section className="abx-sec">
         <div className="abx-head">
           <h3>开篇</h3>
-          <span>大标题、三枚身份小签、落款</span>
+          <span>问候语、一段 80–120 字的自我介绍、三枚身份小签、落款</span>
         </div>
         <label>
-          大标题
+          问候语（大标题）
           <textarea
             value={about.headline}
             onChange={(e) => patch('headline', e.target.value)}
             style={{ minHeight: 60 }}
+          />
+        </label>
+        <label>
+          自我介绍（一段，80–120 字最好）
+          <textarea
+            value={about.intro}
+            onChange={(e) => patch('intro', e.target.value)}
+            style={{ minHeight: 96 }}
           />
         </label>
 
@@ -121,17 +129,17 @@ export default function AboutForm({ about: initial }: { about: AboutConfig }) {
         </button>
       </section>
 
-      {/* ---------- 三句实话 ---------- */}
+      {/* ---------- 关于我 ---------- */}
       <section className="abx-sec">
         <div className="abx-head">
-          <h3>壹 · 三句实话</h3>
-          <span>左边一句判断，右边一句括注。三句最稳妥，多了就没劲了</span>
+          <h3>壹 · 关于我</h3>
+          <span>三行分别是身份、性格习惯、价值观；左正文，右括注</span>
         </div>
         {about.truths.map((t, i) => (
           <div className="abx-row" key={i}>
             <div className="abx-num">{String(i + 1).padStart(2, '0')}</div>
             <label className="grow">
-              判断
+              正文
               <textarea value={t.title} onChange={(e) => rowPatch('truths', i, { title: e.target.value })} style={{ minHeight: 52 }} />
             </label>
             <label className="grow">
@@ -146,40 +154,68 @@ export default function AboutForm({ about: initial }: { about: AboutConfig }) {
         </button>
       </section>
 
-      {/* ---------- 此刻在做 ---------- */}
+      {/* ---------- 兴趣与热爱 ---------- */}
       <section className="abx-sec">
         <div className="abx-head">
-          <h3>贰 · 此刻在做</h3>
-          <span>「在做的事 / 更新节奏 / 常用工具」三张数字卡片的文字，在站点设置里改</span>
+          <h3>贰 · 兴趣与热爱</h3>
+          <span>每张卡通往站内一个真实模块；链接可以写 /writing、/novels、/music，或 #tech 跳到本页下方</span>
         </div>
-        {about.now.map((n, i) => (
+        {about.interests.map((it, i) => (
           <div className="abx-row" key={i}>
-            <div className="abx-num">#{i + 1}</div>
             <label>
-              事项
-              <input value={n.name} onChange={(e) => rowPatch('now', i, { name: e.target.value })} />
+              名称
+              <input value={it.name} onChange={(e) => rowPatch('interests', i, { name: e.target.value })} />
             </label>
             <label>
-              状态
-              <input value={n.state} onChange={(e) => rowPatch('now', i, { state: e.target.value })} placeholder="推进中 / 想起就写" />
+              小标签
+              <input value={it.tag} onChange={(e) => rowPatch('interests', i, { tag: e.target.value })} placeholder="AI · Web" />
             </label>
             <label className="grow">
-              一句现状
-              <input value={n.note} onChange={(e) => rowPatch('now', i, { note: e.target.value })} />
+              一句说明
+              <input value={it.desc} onChange={(e) => rowPatch('interests', i, { desc: e.target.value })} />
             </label>
-            <RowTools k="now" i={i} n={about.now.length} />
+            <label>
+              链接
+              <input value={it.href} onChange={(e) => rowPatch('interests', i, { href: e.target.value })} placeholder="/writing" />
+            </label>
+            <RowTools k="interests" i={i} n={about.interests.length} />
           </div>
         ))}
-        <button type="button" className="abx-add" onClick={() => addRow('now', { name: '', state: '', note: '' })}>
-          + 加一件
+        <button type="button" className="abx-add" onClick={() => addRow('interests', { name: '', tag: '', desc: '', href: '' })}>
+          + 加一张卡
         </button>
+
+        <div className="abx-sub">下面这两栏「常听 / 爱看」跟在兴趣卡片后面一起显示</div>
+        {about.listens.map((l, i) => (
+          <div className="abx-row" key={i}>
+            <label>
+              小标题
+              <input value={l.cat} onChange={(e) => rowPatch('listens', i, { cat: e.target.value })} />
+            </label>
+            <label className="grow">
+              内容
+              <input
+                value={toText(l.items)}
+                onChange={(e) => rowPatch('listens', i, { items: toList(e.target.value) })}
+              />
+            </label>
+            <RowTools k="listens" i={i} n={about.listens.length} />
+          </div>
+        ))}
+        <button type="button" className="abx-add" onClick={() => addRow('listens', { cat: '', items: [] })}>
+          + 加一栏
+        </button>
+        <label>
+          底下那段话
+          <textarea value={about.listenNote} onChange={(e) => patch('listenNote', e.target.value)} style={{ minHeight: 80 }} />
+        </label>
       </section>
 
-      {/* ---------- 技能 ---------- */}
-      <section className="abx-sec">
+      {/* ---------- 技术与创造 ---------- */}
+      <section className="abx-sec" id="tech">
         <div className="abx-head">
-          <h3>叁 · 手上这些工具</h3>
-          <span>标签用「、」隔开；色系跟着分组类型走</span>
+          <h3>叁 · 技术与创造</h3>
+          <span>先一组工具，再几张代表作；标签用「、」隔开</span>
         </div>
         {about.skills.map((s, i) => (
           <div className="abx-row" key={i}>
@@ -213,6 +249,49 @@ export default function AboutForm({ about: initial }: { about: AboutConfig }) {
         ))}
         <button type="button" className="abx-add" onClick={() => addRow('skills', { group: '', type: 'backend', note: '', items: [] })}>
           + 加一组
+        </button>
+
+        <div className="abx-sub">代表作（建议 2–4 张，链到真实存在的页面）</div>
+        {about.projects.map((p, i) => (
+          <div className="abx-play" key={i}>
+            <ImageField value={p.cover} onChange={(url) => rowPatch('projects', i, { cover: url })} />
+            <div className="abx-play-body">
+              <div className="abx-row">
+                <label>
+                  名称
+                  <input value={p.name} onChange={(e) => rowPatch('projects', i, { name: e.target.value })} />
+                </label>
+                <label className="grow">
+                  链接
+                  <input value={p.href} onChange={(e) => rowPatch('projects', i, { href: e.target.value })} placeholder="/novels/xxx" />
+                </label>
+                <RowTools k="projects" i={i} n={about.projects.length} />
+              </div>
+              <label>
+                简介
+                <textarea
+                  value={p.desc}
+                  onChange={(e) => rowPatch('projects', i, { desc: e.target.value })}
+                  style={{ minHeight: 56 }}
+                />
+              </label>
+              <label>
+                技术标签
+                <input
+                  value={toText(p.tech)}
+                  onChange={(e) => rowPatch('projects', i, { tech: toList(e.target.value) })}
+                  placeholder="Next.js、Prisma"
+                />
+              </label>
+            </div>
+          </div>
+        ))}
+        <button
+          type="button"
+          className="abx-add"
+          onClick={() => addRow('projects', { name: '', desc: '', tech: [], href: '', cover: '' })}
+        >
+          + 加一个项目
         </button>
       </section>
 
@@ -269,10 +348,39 @@ export default function AboutForm({ about: initial }: { about: AboutConfig }) {
         </button>
       </section>
 
+      {/* ---------- 正在做的事情（备用） ---------- */}
+      <section className="abx-sec">
+        <div className="abx-head">
+          <h3>伍 · 正在做的事情（备用条目）</h3>
+          <span>优先显示「在做」表的数据；只有在「在做」表为空时，才用这里的条目顶上</span>
+        </div>
+        {about.now.map((n, i) => (
+          <div className="abx-row" key={i}>
+            <div className="abx-num">#{i + 1}</div>
+            <label>
+              事项
+              <input value={n.name} onChange={(e) => rowPatch('now', i, { name: e.target.value })} />
+            </label>
+            <label>
+              状态
+              <input value={n.state} onChange={(e) => rowPatch('now', i, { state: e.target.value })} placeholder="推进中 / 想起就写" />
+            </label>
+            <label className="grow">
+              一句现状
+              <input value={n.note} onChange={(e) => rowPatch('now', i, { note: e.target.value })} />
+            </label>
+            <RowTools k="now" i={i} n={about.now.length} />
+          </div>
+        ))}
+        <button type="button" className="abx-add" onClick={() => addRow('now', { name: '', state: '', note: '' })}>
+          + 加一件
+        </button>
+      </section>
+
       {/* ---------- 来路 ---------- */}
       <section className="abx-sec">
         <div className="abx-head">
-          <h3>伍 · 来路</h3>
+          <h3>陆 · 来路</h3>
           <span>时间线，最后一句写当时的心境</span>
         </div>
         {about.timeline.map((t, i) => (
@@ -301,35 +409,56 @@ export default function AboutForm({ about: initial }: { about: AboutConfig }) {
         </button>
       </section>
 
-      {/* ---------- 听什么看什么 ---------- */}
+      {/* ---------- 关于忘忧居 ---------- */}
       <section className="abx-sec">
         <div className="abx-head">
-          <h3>陆 · 听什么，看什么</h3>
-          <span>两栏，标签用「、」隔开</span>
+          <h3>柒 · 关于忘忧居</h3>
+          <span>这个小标题 + 几段话：为什么叫这个名字、这里放什么、希望它变成什么样</span>
         </div>
-        {about.listens.map((l, i) => (
+        <label>
+          小标题
+          <input value={about.story.title} onChange={(e) => patch('story', { ...about.story, title: e.target.value })} />
+        </label>
+        {about.story.paragraphs.map((p, i) => (
           <div className="abx-row" key={i}>
-            <label>
-              小标题
-              <input value={l.cat} onChange={(e) => rowPatch('listens', i, { cat: e.target.value })} />
-            </label>
+            <div className="abx-num">{i + 1}</div>
             <label className="grow">
-              内容
-              <input
-                value={toText(l.items)}
-                onChange={(e) => rowPatch('listens', i, { items: toList(e.target.value) })}
+              第 {i + 1} 段
+              <textarea
+                value={p}
+                onChange={(e) =>
+                  patch('story', {
+                    ...about.story,
+                    paragraphs: about.story.paragraphs.map((x, k) => (k === i ? e.target.value : x)),
+                  })
+                }
+                style={{ minHeight: 70 }}
               />
             </label>
-            <RowTools k="listens" i={i} n={about.listens.length} />
+            <div className="abx-tools">
+              <button
+                type="button"
+                className="del"
+                onClick={() =>
+                  patch('story', {
+                    ...about.story,
+                    paragraphs: about.story.paragraphs.filter((_, k) => k !== i),
+                  })
+                }
+                disabled={about.story.paragraphs.length <= 1}
+              >
+                删
+              </button>
+            </div>
           </div>
         ))}
-        <button type="button" className="abx-add" onClick={() => addRow('listens', { cat: '', items: [] })}>
-          + 加一栏
+        <button
+          type="button"
+          className="abx-add"
+          onClick={() => patch('story', { ...about.story, paragraphs: [...about.story.paragraphs, ''] })}
+        >
+          + 加一段
         </button>
-        <label>
-          底下那段话
-          <textarea value={about.listenNote} onChange={(e) => patch('listenNote', e.target.value)} style={{ minHeight: 80 }} />
-        </label>
       </section>
 
       {state.error ? <div className="admin-banner err">{state.error}</div> : null}

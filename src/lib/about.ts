@@ -9,31 +9,63 @@ export type AboutStop = { time: string; title: string; desc: string; note: strin
 export type AboutListen = { cat: string; items: string[] };
 export type AboutChip = { label: string; text: string };
 
+/** 兴趣与热爱：一张卡通往站内一个真实模块 */
+export type AboutInterest = { name: string; tag: string; desc: string; href: string };
+
+/** 技术与创造：代表作，链到站内的作品页 */
+export type AboutProject = { name: string; desc: string; tech: string[]; href: string; cover: string };
+
+/** 关于这个网站：几个段落 */
+export type AboutStory = { title: string; paragraphs: string[] };
+
 export type AboutConfig = {
   headline: string;
+  intro: string;
   chips: AboutChip[];
   truths: AboutTruth[];
+  interests: AboutInterest[];
   now: AboutNow[];
   skills: AboutSkill[];
+  projects: AboutProject[];
   plays: AboutPlay[];
   playNote: string;
   timeline: AboutStop[];
   listens: AboutListen[];
   listenNote: string;
+  story: AboutStory;
   outro: string[];
 };
 
 export const DEFAULT_ABOUT: AboutConfig = {
-  headline: '三件事并行，一件都还没做完。',
+  headline: '你好，欢迎来到忘忧居。',
+  intro:
+    '学数学出身，后来发现把一件事讲清楚，比算对一个数难。现在白天写代码和论文，晚上写文案、剪片子；也想把看过的、听过的、卡住又绕过去的过程都留下来。这里不急着长大，慢慢写。',
   chips: [
     { label: '底子', text: '数学 · 信息与计算科学' },
     { label: '手上', text: 'AIGC 漫剧 · 剧本与画面' },
     { label: '习惯', text: '把过程也写下来' },
   ],
   truths: [
-    { title: '我很少把一件事做完，但也很少把一件事丢掉。', note: '五件并行是真的，收尾慢也是真的。' },
-    { title: '学数学出身，后来发现把一件事讲清楚，比算对一个数难。', note: '所以现在更愿意写字——写完还能回头看。' },
-    { title: '计划表写得比成品好看。', note: '资产表、分镜表是我最满意的作品之一。这话不全是玩笑。' },
+    {
+      title: '信息与计算科学在读，做 AIGC 漫剧和 GEO 系统，论文写的是 PCA-VaR 风险度量。',
+      note: '技术、写作、影像三条线并行——不是斜杠，是同一件事的不同环节。',
+    },
+    {
+      title: '对新东西保持好奇，喜欢把想法做成能跑、能看的东西。',
+      note: '计划表写得比成品好看，这一点我认。',
+    },
+    {
+      title: '相信过程值得被记录，也相信认真做完一件小事的分量。',
+      note: '不追求热闹，只希望多年以后打开这里，还能找到当时的痕迹。',
+    },
+  ],
+  interests: [
+    { name: '技术', tag: 'AI · Web', desc: '把想法做成能跑、能看的东西。', href: '#tech' },
+    { name: '创作', tag: '写作 · 文案', desc: '写文章、写脚本，也写那些没长成文章的话。', href: '/writing' },
+    { name: '小说', tag: '连载', desc: '《跨界追夫》，一章一章往下写。', href: '/novels' },
+    { name: '影像', tag: '相册', desc: '散步时遇见的云、猫和倒影。', href: '/gallery' },
+    { name: '音乐', tag: '歌单', desc: '写不出东西时，翻出来听一遍的那几首。', href: '/music' },
+    { name: '阅读', tag: '随记', desc: '读到的句子、想通的道理，随手记一笔。', href: '/notes' },
   ],
   now: [
     { name: 'AIGC 漫剧', state: '推进中', note: '剧本、资产表、分镜表，一张一张往下排。白天干这个。' },
@@ -66,6 +98,38 @@ export const DEFAULT_ABOUT: AboutConfig = {
   ],
   listenNote:
     '写不出东西的时候，翻出《陀飞轮》听一遍；卡在某一句上，就换成《平凡之路》。电影偏爱慢慢讲完一件事的那种，看完不急着给答案。',
+  projects: [
+    {
+      name: '短剧《跨界追夫》',
+      desc: '从剧本、资产三视图到分镜表的整条流水线，一集一集往下做；画面和节奏都按可拍、可复用的标准来。',
+      tech: ['剧本', '资产表', '分镜表', 'Seedance'],
+      href: '/novels/kuajie-zhufu',
+      cover: '',
+    },
+    {
+      name: 'GEO 搜索可见性监测',
+      desc: '把多个 AI 搜索平台的结果拉回来、归一化、落成台账；十几个适配器，一个前台看板。',
+      tech: ['Next.js', 'TypeScript', 'Prisma', 'PostgreSQL'],
+      href: '/writing/ai-colleague',
+      cover: '',
+    },
+    {
+      name: '忘忧居 · Nepenthe',
+      desc: '这个站本身：文章、小说、相册、音乐、留言都在一处，后台能改的就不写死在代码里。',
+      tech: ['Next.js', 'Prisma', 'Docker'],
+      href: '/',
+      cover: '',
+    },
+  ],
+  story: {
+    title: '为什么叫忘忧居',
+    paragraphs: [
+      '「忘忧」不是逃开，是给心里留一处不必着急的地方。日子里的账要算，方案要改，稿子要等；但总得有个角落，允许你把手上那件事先放下十分钟。',
+      'Nepenthe 是希腊神话里让人忘忧的东西。选了它做英文名，一半因为它念起来轻，一半因为我不想把这里叫成「某某的作品集」。',
+      '所以这里放的东西很杂：技术上的摸索、读到的句子、写了一半的小说、散步拍的照片、最近在循环的歌。它们不必成体系，只要是真的。',
+      '不追求热闹。希望多年以后重新打开这里，还能找到当年认真生活和创造过的痕迹。',
+    ],
+  },
   outro: ['聊 AIGC、聊剧本、聊你正卡住的那件事，都行；', '也可以只是想说句什么，我不一定会很快回。'],
 };
 
@@ -93,8 +157,19 @@ export function normalizeAbout(input: unknown): AboutConfig {
 
   return {
     headline: str(o.headline, d.headline),
+    intro: str(o.intro, d.intro),
     chips: pickList(o.chips, (r, dd) => ({ label: str(r.label, dd.label), text: str(r.text, dd.text) }), d.chips),
     truths: pickList(o.truths, (r, dd) => ({ title: str(r.title, dd.title), note: str(r.note, dd.note) }), d.truths),
+    interests: pickList(
+      o.interests,
+      (r, dd) => ({
+        name: str(r.name, dd.name),
+        tag: str(r.tag, dd.tag),
+        desc: str(r.desc, dd.desc),
+        href: str(r.href, dd.href),
+      }),
+      d.interests,
+    ),
     now: pickList(
       o.now,
       (r, dd) => ({ name: str(r.name, dd.name), state: str(r.state, dd.state), note: str(r.note, dd.note) }),
@@ -109,6 +184,17 @@ export function normalizeAbout(input: unknown): AboutConfig {
         items: strs(r.items).length ? strs(r.items) : dd.items,
       }),
       d.skills,
+    ),
+    projects: pickList(
+      o.projects,
+      (r, dd) => ({
+        name: str(r.name, dd.name),
+        desc: str(r.desc, dd.desc),
+        tech: strs(r.tech).length ? strs(r.tech) : dd.tech,
+        href: str(r.href, dd.href),
+        cover: str(r.cover, dd.cover),
+      }),
+      d.projects,
     ),
     plays: pickList(
       o.plays,
@@ -138,6 +224,13 @@ export function normalizeAbout(input: unknown): AboutConfig {
       d.listens,
     ),
     listenNote: str(o.listenNote, d.listenNote),
+    story: (() => {
+      const raw = (o.story && typeof o.story === 'object' ? o.story : {}) as Record<string, unknown>;
+      return {
+        title: str(raw.title, d.story.title),
+        paragraphs: strs(raw.paragraphs).length ? strs(raw.paragraphs) : d.story.paragraphs,
+      };
+    })(),
     outro: strs(o.outro).length ? strs(o.outro) : d.outro,
   };
 }
