@@ -68,7 +68,7 @@ export default function AboutForm({ about: initial }: { about: AboutConfig }) {
       <section className="abx-sec">
         <div className="abx-head">
           <h3>开篇</h3>
-          <span>问候语、一段 80–120 字的自我介绍、三枚身份小签、落款</span>
+          <span>问候语、一段 80–120 字的自我介绍、三枚身份小签</span>
         </div>
         <label>
           问候语（大标题）
@@ -103,29 +103,6 @@ export default function AboutForm({ about: initial }: { about: AboutConfig }) {
         ))}
         <button type="button" className="abx-add" onClick={() => addRow('chips', { label: '', text: '' })}>
           + 加一枚小签
-        </button>
-
-        <div className="abx-sub">落款（每行一句，显示在结尾的卡片里）</div>
-        {about.outro.map((line, i) => (
-          <div className="abx-row" key={i}>
-            <label className="grow">
-              第 {i + 1} 句
-              <input value={line} onChange={(e) => patch('outro', about.outro.map((x, k) => (k === i ? e.target.value : x)))} />
-            </label>
-            <div className="abx-tools">
-              <button
-                type="button"
-                className="del"
-                onClick={() => patch('outro', about.outro.filter((_, k) => k !== i))}
-                disabled={about.outro.length <= 1}
-              >
-                删
-              </button>
-            </div>
-          </div>
-        ))}
-        <button type="button" className="abx-add" onClick={() => patch('outro', [...about.outro, ''])}>
-          + 加一句
         </button>
       </section>
 

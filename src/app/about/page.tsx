@@ -13,7 +13,6 @@ const NUM = ['壹', '贰', '叁', '肆', '伍', '陆', '柒', '捌', '玖'];
 
 export default async function AboutPage() {
   const [site, about, doings] = await Promise.all([getSite(), getAbout(), listDoings()]);
-  const c = site.contact;
   const doingItems = doings.length
     ? doings.map((d) => ({ key: d.id, name: d.title, state: d.state, note: d.noteLong || d.note }))
     : about.now.map((n, i) => ({ key: `now-${i}`, name: n.name, state: n.state, note: n.note }));
@@ -108,7 +107,7 @@ export default async function AboutPage() {
         {about.skills.length ? (
           <section className="about-section" id="tech">
             <div className="ab-head">
-              <span className="ab-label">{NUM[1]}</span>
+              <span className="ab-label">{NUM[2]}</span>
               <h2 className="ab-title">技术与创造</h2>
               <span className="ab-rule" />
             </div>
@@ -143,7 +142,7 @@ export default async function AboutPage() {
         {about.plays.length ? (
           <section className="about-section">
             <div className="ab-head">
-              <span className="ab-label">{NUM[2]}</span>
+              <span className="ab-label">{NUM[3]}</span>
               <h2 className="ab-title">玩什么</h2>
               <span className="ab-rule" />
             </div>
@@ -172,7 +171,7 @@ export default async function AboutPage() {
         {doingItems.length ? (
           <section className="about-section">
             <div className="ab-head">
-              <span className="ab-label">{NUM[3]}</span>
+              <span className="ab-label">{NUM[4]}</span>
               <h2 className="ab-title">正在做的事情</h2>
               <span className="ab-rule" />
             </div>
@@ -207,7 +206,7 @@ export default async function AboutPage() {
         {about.timeline.length ? (
           <section className="about-section">
             <div className="ab-head">
-              <span className="ab-label">{NUM[4]}</span>
+              <span className="ab-label">{NUM[5]}</span>
               <h2 className="ab-title">来路</h2>
               <span className="ab-rule" />
             </div>
@@ -230,7 +229,7 @@ export default async function AboutPage() {
         {about.story.paragraphs.length ? (
           <section className="about-section">
             <div className="ab-head">
-              <span className="ab-label">{NUM[5]}</span>
+              <span className="ab-label">{NUM[6]}</span>
               <h2 className="ab-title">关于忘忧居</h2>
               <span className="ab-rule" />
             </div>
@@ -245,48 +244,8 @@ export default async function AboutPage() {
           </section>
         ) : null}
 
-        {/* ===== 联系我 ===== */}
-        <section className="about-section about-outro">
-          <div className="ab-head">
-            <span className="ab-label">{NUM[6]}</span>
-            <h2 className="ab-title">联系我</h2>
-            <span className="ab-rule" />
-          </div>
-          <p className="outro-line">
-            {about.outro.map((line, i) => (
-              <span key={i}>
-                {line}
-                {i < about.outro.length - 1 ? <br /> : null}
-              </span>
-            ))}
-          </p>
-          <div className="contact-grid">
-            {c.github ? (
-              <a className="contact-item" href={`https://github.com/${c.github}`} target="_blank" rel="noopener">
-                <span className="contact-label">GitHub</span>
-                <span className="contact-value">@{c.github}</span>
-              </a>
-            ) : null}
-            {c.email ? (
-              <a className="contact-item" href={`mailto:${c.email}`}>
-                <span className="contact-label">邮箱</span>
-                <span className="contact-value">{c.email}</span>
-              </a>
-            ) : null}
-            {c.wechatId ? (
-              <div className="contact-item" data-copy={c.wechatId} role="button" tabIndex={0}>
-                <span className="contact-label">微信</span>
-                <span className="contact-value">{c.wechatId}</span>
-              </div>
-            ) : null}
-            {c.douyin ? (
-              <div className="contact-item">
-                <span className="contact-label">抖音</span>
-                <span className="contact-value">{c.douyin}</span>
-              </div>
-            ) : null}
-          </div>
-        </section>
+        {/* ===== 结束 ===== */}
+
       </div>
     </div>
   );

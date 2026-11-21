@@ -910,25 +910,6 @@
   color: var(--dim);
 }
 
-/* --- 落款 --- */
-.about-outro {
-  margin: 44px 0 72px;
-  padding: 30px 30px 26px;
-  border: 1px solid var(--line-2);
-  border-radius: 16px;
-  background:
-    radial-gradient(120% 120% at 100% 0%, rgba(58, 90, 82, 0.06), transparent 60%),
-    var(--panel);
-}
-.outro-line {
-  margin: 0 0 24px;
-  font-family: var(--serif);
-  font-size: 17px;
-  line-height: 2;
-  color: var(--ink);
-}
-.about-outro .contact-grid { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
-
 @media (max-width: 900px) {
   .about-hero-grid { grid-template-columns: 1fr; gap: 24px; }
   .about-portrait img { width: 100%; height: 210px; }
@@ -942,7 +923,6 @@
   .play-card, .play-card-big { grid-column: span 1 !important; }
   .listen-grid { grid-template-columns: 1fr; }
   .ab-title { font-size: 19px; }
-  .about-outro { padding: 22px 18px; }
   .about-seal { width: 46px; height: 46px; font-size: 15px; }
 }
 
@@ -972,9 +952,6 @@
 @media (max-width: 900px) {
   .about-portrait img { width: 150px; height: 150px; }
   .about-seal { left: 118px; bottom: 2px; }
-  .about-outro .contact-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .contact-item { padding: 14px 16px; }
-  .contact-value { font-size: 14px; }
 }
 
 /* --- 关于我 · 玩什么：配图卡 --- */
