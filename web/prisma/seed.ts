@@ -1,5 +1,6 @@
 /**
- * 把旧仓库里的内容灌进 PostgreSQL。
+ * 把随仓库带的内容灌进 PostgreSQL。
+ * 数据源就在 prisma/seed-data/ 下（旧站迁过来的 markdown 与 JSON）。
  * 幂等：按 slug upsert，重复跑不会重复插入；不会删掉后台里已有的东西。
  *
  * 跑法：cd web && npm run db:seed
@@ -17,9 +18,9 @@ import { existsSync } from 'node:fs';
 import path from 'node:path';
 
 const prisma = new PrismaClient();
-const ROOT = path.resolve(process.cwd(), '..'); // web/ 的上一层就是旧仓库
-const CONTENT = path.join(ROOT, 'src', 'content');
-const DATA = path.join(ROOT, 'src', 'data');
+const ROOT = path.resolve(process.cwd(), 'prisma', 'seed-data');
+const CONTENT = path.join(ROOT, 'content');
+const DATA = path.join(ROOT, 'data');
 
 type Front = Record<string, string | string[]>;
 

@@ -44,7 +44,7 @@ for ($i = 0; $i -lt 40; $i++) {
 }
 if (-not $ok) { throw 'web 没起来，docker compose -f docker-compose.local.yml logs web --tail 40 看日志' }
 
-# 4) 空库灌种子（宿主机跑，读的是旧站 ../src/content）
+# 4) 空库灌种子（宿主机跑，读的是 web/prisma/seed-data）
 $counts = docker exec nepenthe-local-db-1 psql -U nepenthe -d nepenthe -tAc 'select count(*) from "Post";' 2>$null
 if ([string]::IsNullOrWhiteSpace($counts) -or [int]$counts -eq 0) {
   Say '库里还没有文章，导入旧站内容…'
