@@ -24,6 +24,8 @@ export default function TrackForm({ track }: { track: Track }) {
           歌手
           <input name="artist" defaultValue={track?.artist ?? ''} />
         </label>
+      </div>
+      <div className="admin-row">
         <label>
           时长（秒）
           <input name="dur" type="number" min={0} defaultValue={track?.dur ?? 0} />

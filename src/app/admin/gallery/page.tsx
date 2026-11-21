@@ -45,10 +45,44 @@ export default async function AdminGalleryPage() {
             <form action={deleteAlbum}>
               <input type="hidden" name="id" value={a.id} />
               <button className="admin-btn danger" type="submit">
-                删除相簿
+                删除相簿（含照片记录）
               </button>
             </form>
           </div>
+
+          <details className="album-edit">
+            <summary>改名 / 改说明 / 改色调</summary>
+            <form className="admin-form" action={createAlbumForm}>
+              <input type="hidden" name="id" value={a.id} />
+              <div className="admin-row">
+                <label>
+                  名字
+                  <input name="title" defaultValue={a.title} required />
+                </label>
+                <label>
+                  slug
+                  <input name="slug" defaultValue={a.slug} />
+                </label>
+                <label>
+                  色调
+                  <input name="tone" defaultValue={a.tone} placeholder="mag / cyan / amber" />
+                </label>
+                <label>
+                  排序
+                  <input name="sort" type="number" defaultValue={a.sort} />
+                </label>
+              </div>
+              <label>
+                说明
+                <input name="note" defaultValue={a.note} placeholder="一句话介绍这个相簿" />
+              </label>
+              <div className="admin-actions">
+                <button className="admin-btn primary" type="submit">
+                  保存相簿信息
+                </button>
+              </div>
+            </form>
+          </details>
 
           <div className="gallery-grid">
             {a.photos.map((p) => (

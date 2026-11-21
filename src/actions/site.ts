@@ -20,8 +20,22 @@ function parseJsonArray(raw: string, label: string): { ok: true; value: unknown[
   }
 }
 
-export async function saveSite(_prev: SiteState, form: FormData): Promise<SiteState> {
-  await requireAdmin();
+/** 个人简介：兼容旧的 JSON 数组，也接受「一行一段」的纯文字 */
+function parseBio(raw: string): { ok: true; value: string[] } {
+  const text = raw.trim();
+  if (!text) return { ok: true, value: [] };
+  if (text.startsWith('[')) {
+    try {
+      const parsed = JSON.parse(text);
+      if (Array.isArray(parsed)) return { ok: true, value: parsed.map((v) => String(v)) };
+    } catch {
+      // 落到按行解析
+    }
+  }
+  return { ok: true, value: text.split('\n').map((s) => s.trim()).filter(Boolean) };
+}
+
+export async function saveSite(_prev: SiteState, form: FormData): Promise<SiteState> {  await requireAdmin();
 
   const current = await getSite();
 
@@ -42,8 +56,7 @@ export async function saveSite(_prev: SiteState, form: FormData): Promise<SiteSt
     return { error: '背景压暗值填 0–100' };
   }
 
-  const bio = parseJsonArray(String(form.get('bio') ?? ''), '个人简介');
-  if (!bio.ok) return { error: bio.error };
+  const bio = parseBio(String(form.get('bio') ?? ''));
   const doing = parseJsonArray(String(form.get('doing') ?? ''), '在做的事');
   if (!doing.ok) return { error: doing.error };
   const facts = parseJsonArray(String(form.get('facts') ?? ''), '数字卡片');

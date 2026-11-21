@@ -42,16 +42,18 @@ export default async function AdminMusicPage() {
                 {t.songId} · {Math.floor(t.dur / 60)}:{String(t.dur % 60).padStart(2, '0')}
               </em>
             </span>
-            <form action={deleteTrack} style={{ margin: '6px 0 10px' }}>
-              <input type="hidden" name="id" value={t.id} />
-              <button className="admin-btn danger" type="submit">
-                删除
-              </button>
-            </form>
-            <details>
-              <summary style={{ cursor: 'pointer', fontSize: 12.5, color: 'var(--faint)' }}>修改这首</summary>
-              <TrackForm track={{ id: t.id, songId: t.songId, name: t.name, artist: t.artist, dur: t.dur, why: t.why, sort: t.sort }} />
-            </details>
+            <div className="track-foot">
+              <details>
+                <summary>修改这首</summary>
+                <TrackForm track={{ id: t.id, songId: t.songId, name: t.name, artist: t.artist, dur: t.dur, why: t.why, sort: t.sort }} />
+              </details>
+              <form action={deleteTrack} className="track-del">
+                <input type="hidden" name="id" value={t.id} />
+                <button className="admin-btn danger" type="submit">
+                  删除
+                </button>
+              </form>
+            </div>
           </li>
         ))}
       </ul>

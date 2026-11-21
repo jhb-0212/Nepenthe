@@ -3,6 +3,7 @@
 import { useActionState } from 'react';
 import Link from 'next/link';
 import { saveChapter, type NovelState } from '@/actions/novels';
+import BodyEditor from '@/components/BodyEditor';
 
 type Chapter = {
   id: number;
@@ -42,10 +43,7 @@ export default function ChapterEditor({ novelId, chapter, backHref }: { novelId:
         <input name="slug" defaultValue={chapter?.slug ?? ''} placeholder="ch-01" />
       </label>
 
-      <label>
-        正文（Markdown，可插图）
-        <textarea name="body" defaultValue={chapter?.body ?? ''} />
-      </label>
+      <BodyEditor label="正文（Markdown，可插图）" defaultValue={chapter?.body ?? ''} minHeight={320} />
 
       <label style={{ gridTemplateColumns: 'auto 1fr', alignItems: 'center', gap: 8 }}>
         <input type="checkbox" name="draft" defaultChecked={chapter?.draft ?? false} style={{ width: 'auto' }} />

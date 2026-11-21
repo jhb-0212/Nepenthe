@@ -33,7 +33,14 @@ export default function PagesForm({ pages: initial }: { pages: PagesConfig }) {
         文章、随记、小说、相册里的<b>具体内容</b>仍然在各自的后台模块里编辑。
       </p>
 
-      <section className="abx-sec">
+      <nav className="abx-index" aria-label="页面文案分节">
+        <a href="#pg-gallery">相册横幅</a>
+        {KEYS.map(({ key, label }) => (
+          <a key={key} href={`#pg-${key}`}>{label}</a>
+        ))}
+      </nav>
+
+      <section className="abx-sec" id="pg-gallery">
         <div className="abx-head">
           <h3>相册横幅图</h3>
           <span>不填就用站点默认背景</span>
@@ -54,7 +61,7 @@ export default function PagesForm({ pages: initial }: { pages: PagesConfig }) {
       {KEYS.map(({ key, label, path, hint }) => {
         const pc = pages[key] as PageCopy;
         return (
-          <section className="abx-sec" key={key}>
+          <section className="abx-sec" key={key} id={`pg-${key}`}>
             <div className="abx-head">
               <h3>{label}</h3>
               <span>

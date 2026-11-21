@@ -3,6 +3,7 @@
 import { useActionState } from 'react';
 import Link from 'next/link';
 import { saveNovel, type NovelState } from '@/actions/novels';
+import BodyEditor from '@/components/BodyEditor';
 
 type Novel = {
   id: number;
@@ -60,10 +61,7 @@ export default function NovelEditor({ novel }: { novel: Novel }) {
         <input name="summary" defaultValue={novel?.summary ?? ''} />
       </label>
 
-      <label>
-        作品页正文（Markdown）
-        <textarea name="body" defaultValue={novel?.body ?? ''} />
-      </label>
+      <BodyEditor label="作品页正文（Markdown）" defaultValue={novel?.body ?? ''} minHeight={260} />
 
       <label style={{ gridTemplateColumns: 'auto 1fr', alignItems: 'center', gap: 8 }}>
         <input type="checkbox" name="draft" defaultChecked={novel?.draft ?? false} style={{ width: 'auto' }} />

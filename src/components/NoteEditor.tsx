@@ -3,6 +3,7 @@
 import { useActionState } from 'react';
 import Link from 'next/link';
 import { saveNote, type NoteState } from '@/actions/notes';
+import BodyEditor from '@/components/BodyEditor';
 
 type Note = {
   id: number;
@@ -35,10 +36,12 @@ export default function NoteEditor({ note }: { note: Note }) {
         </label>
       </div>
 
-      <label>
-        内容（支持 ==高亮== 与 &gt; [!note]）
-        <textarea name="body" defaultValue={note?.body ?? ''} style={{ minHeight: 180 }} required />
-      </label>
+      <BodyEditor
+        label="内容（支持 ==高亮== 与 > [!note]）"
+        defaultValue={note?.body ?? ''}
+        minHeight={200}
+        required
+      />
 
       <label style={{ gridTemplateColumns: 'auto 1fr', alignItems: 'center', gap: 8 }}>
         <input type="checkbox" name="draft" defaultChecked={note?.draft ?? false} style={{ width: 'auto' }} />

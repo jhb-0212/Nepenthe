@@ -1,8 +1,9 @@
 'use client';
 
-import { useActionState, useRef, useState } from 'react';
+import { useActionState } from 'react';
 import Link from 'next/link';
 import { savePost, type SaveState } from '@/actions/post';
+import BodyEditor from '@/components/BodyEditor';
 
 type Post = {
   id: number;
@@ -18,41 +19,6 @@ type Post = {
 
 export default function PostEditor({ post }: { post: Post }) {
   const [state, action, pending] = useActionState<SaveState, FormData>(savePost, {});
-  const bodyRef = useRef<HTMLTextAreaElement>(null);
-  const fileRef = useRef<HTMLInputElement>(null);
-  const [uploading, setUploading] = useState(false);
-  const [uploadMsg, setUploadMsg] = useState('');
-
-  async function onPickImage(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setUploading(true);
-    setUploadMsg('上传中…');
-    try {
-      const fd = new FormData();
-      fd.append('file', file);
-      const res = await fetch('/api/admin/upload', { method: 'POST', body: fd });
-      const data = (await res.json()) as { ok?: boolean; url?: string; error?: string; width?: number; height?: number };
-      if (!res.ok || !data.ok || !data.url) throw new Error(data.error || '上传失败');
-
-      const ta = bodyRef.current;
-      const alt = file.name.replace(/\.[^.]+$/, '');
-      const md = `![${alt}](${data.url})`;
-      if (ta) {
-        const start = ta.selectionStart ?? ta.value.length;
-        const end = ta.selectionEnd ?? start;
-        ta.value = ta.value.slice(0, start) + md + ta.value.slice(end);
-        ta.focus();
-        ta.selectionStart = ta.selectionEnd = start + md.length;
-      }
-      setUploadMsg(`已插入 ${data.width}×${data.height}`);
-    } catch (err) {
-      setUploadMsg((err as Error).message);
-    } finally {
-      setUploading(false);
-      if (fileRef.current) fileRef.current.value = '';
-    }
-  }
 
   return (
     <form className="admin-form" action={action}>
@@ -85,31 +51,13 @@ export default function PostEditor({ post }: { post: Post }) {
         摘要
         <input name="summary" defaultValue={post?.summary ?? ''} />
       </label>
-      <label>
-        正文（Markdown，支持 &gt; [!note] 与 ==高亮==）
-        <textarea name="body" ref={bodyRef} defaultValue={post?.body ?? ''} />
-      </label>
 
-      <div className="admin-actions" style={{ alignItems: 'center' }}>
-        <input
-          ref={fileRef}
-          type="file"
-          accept="image/jpeg,image/png,image/webp,image/gif,image/avif,image/tiff"
-          style={{ display: 'none' }}
-          onChange={onPickImage}
-        />
-        <button
-          className="admin-btn"
-          type="button"
-          disabled={uploading}
-          onClick={() => fileRef.current?.click()}
-        >
-          {uploading ? '上传中…' : '插入图片'}
-        </button>
-        <small style={{ color: 'var(--faint)', fontSize: 12 }}>
-          图片会压成 WebP、长边 2560、剥掉 EXIF{uploadMsg ? ` · ${uploadMsg}` : ''}
-        </small>
-      </div>
+      <BodyEditor
+        label="正文（Markdown，支持 > [!note] 与 ==高亮==）"
+        defaultValue={post?.body ?? ''}
+        minHeight={340}
+      />
+
       <label style={{ gridTemplateColumns: 'auto 1fr', alignItems: 'center', gap: 8 }}>
         <input type="checkbox" name="draft" defaultChecked={post?.draft ?? false} style={{ width: 'auto' }} />
         存为草稿（前台不展示）
