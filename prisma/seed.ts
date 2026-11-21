@@ -234,6 +234,21 @@ async function seedSite() {
   console.log(`tracks: ${tracks.length}, doing: ${doing.length}, site: ok`);
 }
 
+async function seedAbout() {
+  // 「关于我」整页文案存在 SiteSetting 的 about 键；库里没有就写一份默认值，
+  // 之后在后台 /admin/about 改，前台读的就是库里这份。
+  const exists = await prisma.siteSetting.findUnique({ where: { key: 'about' } });
+  if (exists) {
+    console.log('about: 已存在，跳过');
+    return;
+  }
+  const { DEFAULT_ABOUT } = await import('../src/lib/about');
+  await prisma.siteSetting.create({
+    data: { key: 'about', value: DEFAULT_ABOUT as unknown as Prisma.InputJsonObject },
+  });
+  console.log('about: 写入默认文案');
+}
+
 async function main() {
   console.log(`seed from ${ROOT}`);
   await seedPosts();
@@ -241,6 +256,7 @@ async function main() {
   await seedNovels();
   await seedPhotos();
   await seedSite();
+  await seedAbout();
   console.log('done.');
 }
 
