@@ -3,7 +3,7 @@
 param([switch]$Down, [switch]$NoBuild)
 
 $ErrorActionPreference = 'Stop'
-Set-Location (Split-Path $PSScriptRoot -Parent)   # web/
+Set-Location (Split-Path $PSScriptRoot -Parent)   # 仓库根目录
 
 function Say($m) { Write-Host "[local] $m" }
 
@@ -44,7 +44,7 @@ for ($i = 0; $i -lt 40; $i++) {
 }
 if (-not $ok) { throw 'web 没起来，docker compose -f docker-compose.local.yml logs web --tail 40 看日志' }
 
-# 4) 空库灌种子（宿主机跑，读的是 web/prisma/seed-data）
+# 4) 空库灌种子（宿主机跑，读的是 prisma/seed-data）
 $counts = docker exec nepenthe-local-db-1 psql -U nepenthe -d nepenthe -tAc 'select count(*) from "Post";' 2>$null
 if ([string]::IsNullOrWhiteSpace($counts) -or [int]$counts -eq 0) {
   Say '库里还没有文章，导入旧站内容…'
@@ -61,6 +61,6 @@ if ([string]::IsNullOrWhiteSpace($counts) -or [int]$counts -eq 0) {
 Say '起来了：'
 Say '  前台  http://127.0.0.1:3100'
 Say '  后台  http://127.0.0.1:3100/admin'
-Say "  账号  $($env:ADMIN_USERNAME ?? 'admin') / 密码见 web/.env"
+Say "  账号  $($env:ADMIN_USERNAME ?? 'admin') / 密码见 .env"
 Say '  数据库 127.0.0.1:55433（user/pass/db 都是 nepenthe）'
 Say '  关掉  pwsh deploy/local-up.ps1 -Down'

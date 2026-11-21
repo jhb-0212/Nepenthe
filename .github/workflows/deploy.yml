@@ -3,9 +3,6 @@ name: build-and-deploy
 on:
   push:
     branches: [main]
-    paths:
-      - 'web/**'
-      - '.github/workflows/deploy.yml'
   workflow_dispatch:
 
 concurrency:
@@ -35,14 +32,14 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: web/package-lock.json
+          cache-dependency-path: package-lock.json
 
       - name: 安装依赖
-        working-directory: web
+        working-directory: .
         run: npm ci
 
       - name: 建表并灌种子（验证迁移可执行）
-        working-directory: web
+        working-directory: .
         env:
           DATABASE_URL: postgresql://nepenthe:nepenthe@127.0.0.1:5432/nepenthe_test?schema=public
         run: |
@@ -50,7 +47,7 @@ jobs:
           npm run db:seed
 
       - name: 类型检查与构建
-        working-directory: web
+        working-directory: .
         env:
           DATABASE_URL: postgresql://nepenthe:nepenthe@127.0.0.1:5432/nepenthe_test?schema=public
           SECRET_KEY: ci-secret-key-32-bytes-long-xxxxx
@@ -76,7 +73,7 @@ jobs:
       - name: 构建并推送镜像
         uses: docker/build-push-action@v6
         with:
-          context: ./web
+          context: .
           push: true
           tags: |
             ${{ env.IMAGE }}:latest

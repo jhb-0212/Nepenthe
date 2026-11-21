@@ -1,23 +1,17 @@
-node_modules/
-*.log
-*.err
-.DS_Store
-Thumbs.db
-
-# 敏感配置：Cookie、密码等，绝不进 git
+node_modules
+.next
 .env
-server/.env
+.env.local
+npm-debug.log*
+*.log
+.DS_Store
+prisma/*.db
+prisma/*.db-journal
+public/gallery/*
+!public/gallery/.gitkeep
 
-# 旧站后台（server/）的运行期数据
-server/.venv/
-server/data/*.db
-server/data/*.db-journal
-server/data/*.db-wal
-server/data/.secret
-server/data/generated.json
-server/data/backups/
-server/pytest.log
-server/uvicorn.log
-server/data/build-history.json
-.venv/
-exit.txt
+# 运行期数据与产物，不进仓库
+data/
+shots/
+tsconfig.tsbuildinfo
+*.zip

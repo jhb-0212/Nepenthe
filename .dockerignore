@@ -9,3 +9,4 @@ shots
 tools
 *.mjs
 public/uploads
+data/

@@ -85,7 +85,7 @@ async function qqLyric(mid: string): Promise<string> {
 
 async function qqSongUrl(mid: string, cookie: string): Promise<{ url: string; error?: string }> {
   if (!cookie) {
-    return { url: '', error: 'QQ 音乐播放需要 VIP cookie：在 web/.env 里填 QQ_COOKIE' };
+    return { url: '', error: 'QQ 音乐播放需要 VIP cookie：在 .env 里填 QQ_COOKIE' };
   }
 
   const payload = {

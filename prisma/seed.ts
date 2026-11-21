@@ -3,7 +3,7 @@
  * 数据源就在 prisma/seed-data/ 下（旧站迁过来的 markdown 与 JSON）。
  * 幂等：按 slug upsert，重复跑不会重复插入；不会删掉后台里已有的东西。
  *
- * 跑法：cd web && npm run db:seed
+ * 跑法：npm run db:seed
  */
 import { PrismaClient, Prisma } from '@prisma/client';
 import { readFile, readdir } from 'node:fs/promises';
