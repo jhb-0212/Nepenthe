@@ -1,0 +1,20 @@
+import { chromium } from 'playwright-core';
+const EDGE = 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe';
+const BASE = 'http://127.0.0.1:3100';
+const browser = await chromium.launch({ executablePath: EDGE, headless: true });
+const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+await page.goto(`${BASE}/music`, { waitUntil: 'domcontentloaded' });
+await page.waitForTimeout(800);
+await page.screenshot({ path: 'shots/music-cols.png' });
+// 直接点第三首（山丘），再回首页看卡片是不是同一首
+await page.click('.tracks li:nth-child(3) .track');
+await page.waitForTimeout(1200);
+await page.screenshot({ path: 'shots/music-col-third.png' });
+await page.click('a[href="/"]');
+await page.waitForTimeout(900);
+await page.evaluate(() => document.querySelector('[data-mu]')?.scrollIntoView({ block: 'center' }));
+await page.waitForTimeout(500);
+await page.screenshot({ path: 'shots/home-sync.png' });
+const card = await page.evaluate(() => document.querySelector('[data-mu] .mu-txt b')?.textContent);
+console.log('home card track:', card);
+await browser.close();

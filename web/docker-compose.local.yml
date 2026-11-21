@@ -1,0 +1,68 @@
+name: nepenthe-local
+
+# 本地开发/预览用：只有 db + 一次性 migrate + web，不跑 nginx / Meilisearch
+# 用法：pwsh deploy/local-up.ps1   （或 docker compose -f docker-compose.local.yml up -d --build）
+# 关掉：pwsh deploy/local-up.ps1 -Down
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: nepenthe
+      POSTGRES_PASSWORD: nepenthe
+      POSTGRES_DB: nepenthe
+    volumes:
+      - pgdata-local:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U nepenthe -d nepenthe']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    # 只绑定回环，方便用 DBeaver / psql 直连看看数据
+    ports:
+      - '127.0.0.1:55433:5432'
+
+  migrate:
+    image: nepenthe-web:local
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runner
+    restart: 'no'
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://nepenthe:nepenthe@db:5432/nepenthe?schema=public
+    command: ['npx', 'prisma', 'migrate', 'deploy']
+
+  web:
+    image: nepenthe-web:local
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    environment:
+      DATABASE_URL: postgresql://nepenthe:nepenthe@db:5432/nepenthe?schema=public
+      PUBLIC_SITE_URL: http://127.0.0.1:3100
+      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-Nepenthe@2026-Local}
+      SECRET_KEY: ${SECRET_KEY:-dev-secret-key-please-change-in-production}
+      # 本地不跑 Meilisearch，留空让搜索走 PostgreSQL 兜底
+      MEILI_HOST: ''
+      MEILI_KEY: ''
+      NETEASE_COOKIE: ${NETEASE_COOKIE:-}
+      # QQ 音乐：想放 QQ 的完整歌曲就往这里填登录 cookie（uin + qm_keyst）
+      QQ_COOKIE: ${QQ_COOKIE:-}
+      TRUST_PROXY: '0'
+    ports:
+      - '127.0.0.1:3100:3100'
+    volumes:
+      # 上传的照片落宿主机，重建容器不丢
+      - ./data/uploads:/app/public/uploads
+
+volumes:
+  pgdata-local:

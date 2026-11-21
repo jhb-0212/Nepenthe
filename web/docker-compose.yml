@@ -1,0 +1,105 @@
+name: nepenthe
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: nepenthe
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-nepenthe}
+      POSTGRES_DB: nepenthe
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U nepenthe -d nepenthe']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    # 数据库不对公网暴露，只给 web 用
+    expose:
+      - '5432'
+
+  search:
+    image: getmeili/meilisearch:v1.16
+    restart: unless-stopped
+    environment:
+      MEILI_MASTER_KEY: ${MEILI_KEY:-nepenthe-master-key-change-me}
+      MEILI_ENV: production
+      MEILI_NO_ANALYTICS: 'true'
+    volumes:
+      - meili:/meili_data
+    expose:
+      - '7700'
+
+  # 一次性任务：导入旧站内容（tsx 在构建层里，所以单独用 builder 目标，按需启用）
+  seed:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: builder
+    profiles: ['seed']
+    restart: 'no'
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    environment:
+      DATABASE_URL: postgresql://nepenthe:${POSTGRES_PASSWORD:-nepenthe}@db:5432/nepenthe?schema=public
+    command: ['npx', 'tsx', 'prisma/seed.ts']
+
+  # 一次性任务：用同一镜像跑 prisma migrate deploy，跑完退出，web 等它成功才启动
+  migrate:
+    image: ${WEB_IMAGE:-nepenthe-web:latest}
+    restart: 'no'
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://nepenthe:${POSTGRES_PASSWORD:-nepenthe}@db:5432/nepenthe?schema=public
+    command: ['npx', 'prisma', 'migrate', 'deploy']
+
+  web:
+    image: ${WEB_IMAGE:-nepenthe-web:latest}
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runner
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+      search:
+        condition: service_started
+    environment:
+      DATABASE_URL: postgresql://nepenthe:${POSTGRES_PASSWORD:-nepenthe}@db:5432/nepenthe?schema=public
+      PUBLIC_SITE_URL: ${PUBLIC_SITE_URL:-http://127.0.0.1}
+      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?ADMIN_PASSWORD 必须设置}
+      SECRET_KEY: ${SECRET_KEY:?SECRET_KEY 必须设置}
+      MEILI_HOST: http://search:7700
+      MEILI_KEY: ${MEILI_KEY:-nepenthe-master-key-change-me}
+      NETEASE_COOKIE: ${NETEASE_COOKIE:-}
+      QQ_COOKIE: ${QQ_COOKIE:-}
+      TRUST_PROXY: '1'
+    ports:
+      - '127.0.0.1:3100:3100'
+    volumes:
+      # 上传的图片必须落在宿主机上，否则重建容器就全丢了
+      - ./data/uploads:/app/public/uploads
+
+  nginx:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    depends_on:
+      - web
+    volumes:
+      - ./deploy/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - '80:80'
+
+volumes:
+  pgdata:
+  meili:

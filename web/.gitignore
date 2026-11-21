@@ -1,0 +1,17 @@
+node_modules
+.next
+.env
+.env.local
+npm-debug.log*
+*.log
+.DS_Store
+prisma/*.db
+prisma/*.db-journal
+public/gallery/*
+!public/gallery/.gitkeep
+
+# 运行期数据与产物，不进仓库
+data/
+shots/
+tsconfig.tsbuildinfo
+*.zip

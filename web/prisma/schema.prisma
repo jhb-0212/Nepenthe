@@ -1,0 +1,205 @@
+// 忘忧居 · 数据模型
+// 从旧的 SQLAlchemy 版本迁移过来，字段语义一一对齐，额外补了三张表：
+//   publish_jobs    发布任务（SSE 推进度、可回滚）
+//   content_versions 内容历史版本（改之前自动存快照）
+//   login_failures   登录失败记录（限流，落库保证重启后依然生效）
+//
+// 索引都按真实查询建：列表按日期倒序、按 slug 取详情、按标签聚合、访问按天聚合。
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model AdminUser {
+  id           Int      @id @default(autoincrement())
+  username     String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  slug      String   @unique
+  title     String
+  date      DateTime @db.Date
+  tag       String   @default("")
+  readTime  String   @default("")
+  summary   String   @default("")
+  body      String   @default("")
+  cover     String?
+  draft     Boolean  @default(false)
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+
+  @@index([draft, date(sort: Desc)])
+  @@index([tag])
+}
+
+model Note {
+  id        Int      @id @default(autoincrement())
+  slug      String   @unique
+  date      DateTime @db.Date
+  tag       String?
+  body      String   @default("")
+  draft     Boolean  @default(false)
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+
+  @@index([draft, date(sort: Desc)])
+}
+
+model Novel {
+  id        Int       @id @default(autoincrement())
+  slug      String    @unique
+  title     String
+  subtitle  String?
+  summary   String    @default("")
+  status    String    @default("连载中")
+  tags      String[]  @default([])
+  updated   DateTime  @db.Date
+  body      String    @default("")
+  draft     Boolean   @default(false)
+  updatedAt DateTime  @updatedAt
+  createdAt DateTime  @default(now())
+  chapters  Chapter[]
+
+  @@index([draft, updated(sort: Desc)])
+}
+
+model Chapter {
+  id        Int      @id @default(autoincrement())
+  novelId   Int
+  novel     Novel    @relation(fields: [novelId], references: [id], onDelete: Cascade)
+  slug      String
+  title     String
+  order     Int      @default(1)
+  date      DateTime @db.Date
+  body      String   @default("")
+  draft     Boolean  @default(false)
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+
+  @@unique([novelId, slug])
+  @@index([novelId, order])
+  @@index([draft])
+}
+
+model Album {
+  id     Int     @id @default(autoincrement())
+  slug   String  @unique
+  title  String
+  tone   String  @default("mag")
+  note   String  @default("")
+  sort   Int     @default(0)
+  photos Photo[]
+}
+
+model Photo {
+  id        Int      @id @default(autoincrement())
+  albumId   Int
+  album     Album    @relation(fields: [albumId], references: [id], onDelete: Cascade)
+  src       String
+  caption   String   @default("")
+  date      DateTime @db.Date
+  span      String?
+  sort      Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@index([albumId, sort])
+}
+
+model Track {
+  id      Int    @id @default(autoincrement())
+  songId  String
+  name    String
+  artist  String @default("")
+  dur     Int    @default(0)
+  why     String @default("")
+  sort    Int    @default(0)
+}
+
+model Doing {
+  id       Int    @id @default(autoincrement())
+  state    String @default("")
+  title    String
+  sub      String @default("")
+  note     String @default("")
+  noteLong String @default("")
+  sort     Int    @default(0)
+}
+
+model SiteSetting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt
+}
+
+/// 一次页面访问。只留聚合要用的东西，原始 IP 不入库。
+/// visitor = sha256(IP + UA + 当日盐) 的前 16 位，盐每天换，跨天不可关联。
+model Visit {
+  id        BigInt   @id @default(autoincrement())
+  day       DateTime @db.Date
+  path      String
+  ref       String   @default("")
+  ua        String   @default("")
+  visitor   String
+  createdAt DateTime @default(now())
+
+  @@index([day])
+  @@index([day, path])
+  @@index([visitor])
+}
+
+model LoginFailure {
+  ip        String   @id
+  failures  Float[]  @default([])
+  lockUntil Float    @default(0)
+}
+
+model ContentVersion {
+  id          Int      @id @default(autoincrement())
+  contentType String
+  contentId   Int
+  title       String   @default("")
+  body        String   @default("")
+  snapshot    Json
+  createdAt   DateTime @default(now())
+
+  @@index([contentType, contentId])
+  @@index([createdAt(sort: Desc)])
+}
+
+model PublishJob {
+  id          Int       @id @default(autoincrement())
+  status      String    @default("queued") // queued | running | success | failed
+  step        String    @default("")
+  progress    Int       @default(0)
+  log         String    @default("")
+  triggeredBy String    @default("")
+  startedAt   DateTime  @default(now())
+  finishedAt  DateTime?
+
+  @@index([startedAt(sort: Desc)])
+}
+
+// 匿名留言：先入库、后审核，approved 之前前台看不见
+model Message {
+  id        Int      @id @default(autoincrement())
+  name      String   @default("") // 昵称可空，空就显示「佚名」
+  body      String
+  approved  Boolean  @default(false)
+  hidden    Boolean  @default(false) // 审核时软删，不物理删除，留证
+  ipHash    String   @default("") // 同 Visit：只存加盐哈希，不存 IP
+  ua        String   @default("")
+  note      String   @default("") // 审核备注，只有我看得到
+  createdAt DateTime @default(now())
+
+  @@index([approved, hidden, createdAt(sort: Desc)])
+  @@index([ipHash, createdAt])
+  @@index([createdAt(sort: Desc)])
+}

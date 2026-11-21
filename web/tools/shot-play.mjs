@@ -1,0 +1,15 @@
+import { chromium } from 'playwright-core';
+const EDGE = 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe';
+const b = await chromium.launch({ executablePath: EDGE, headless: true });
+const p = await b.newPage({ viewport: { width: 1440, height: 1000 } });
+const bad = [];
+p.on('response', r => { if (r.url().includes('/games/') && r.status() >= 400) bad.push(r.url()+' '+r.status()); });
+await p.goto('http://127.0.0.1:3100/about', { waitUntil: 'networkidle' });
+await p.waitForSelector('.play-card', { timeout: 20000 });
+await p.waitForTimeout(600);
+await p.evaluate(() => document.querySelector('.play-grid').scrollIntoView({ block: 'center' }));
+await p.waitForTimeout(500);
+await p.screenshot({ path: 'shots/about-play.png' });
+await p.screenshot({ path: 'shots/about-full2.png', fullPage: true });
+console.log('broken imgs:', bad.length ? bad.join('|') : 'none');
+await b.close();

@@ -1,0 +1,14 @@
+import { chromium } from 'playwright-core';
+const EDGE = 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe';
+const b = await chromium.launch({ executablePath: EDGE, headless: true });
+const p = await b.newPage({ viewport: { width: 1440, height: 1000 }, deviceScaleFactor: 1 });
+await p.goto('http://127.0.0.1:3100/about', { waitUntil: 'networkidle' });
+await p.waitForSelector('.about-hero', { timeout: 20000 });
+await p.waitForTimeout(400);
+await p.screenshot({ path: 'shots/about-1.png' });
+await p.screenshot({ path: 'shots/about-full.png', fullPage: true });
+const m = await b.newPage({ viewport: { width: 390, height: 844 } });
+await m.goto('http://127.0.0.1:3100/about', { waitUntil: 'networkidle' });
+await m.waitForTimeout(300);
+await m.screenshot({ path: 'shots/about-mobile.png', fullPage: true });
+await b.close();

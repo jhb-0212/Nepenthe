@@ -1,0 +1,17 @@
+import { chromium } from 'playwright-core';
+const EDGE = 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe';
+const BASE = 'http://127.0.0.1:3100';
+const browser = await chromium.launch({ executablePath: EDGE, headless: true });
+const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+await page.goto(`${BASE}/admin/login`, { waitUntil: 'domcontentloaded' });
+await page.fill('input[name="username"]', 'admin');
+await page.fill('input[name="password"]', 'Nepenthe@2026-Local');
+await page.click('button[type="submit"]');
+await page.waitForURL(/\/admin$/, { timeout: 20000 });
+await page.waitForTimeout(500);
+await page.screenshot({ path: 'shots/admin-home2.png' });
+await page.goto(`${BASE}/admin/stats`, { waitUntil: 'domcontentloaded' });
+await page.waitForTimeout(500);
+await page.screenshot({ path: 'shots/admin-stats.png' });
+console.log('shots ok');
+await browser.close();

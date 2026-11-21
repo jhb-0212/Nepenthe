@@ -1,0 +1,17 @@
+import { chromium } from 'playwright-core';
+const EDGE = 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe';
+const b = await chromium.launch({ executablePath: EDGE, headless: true });
+const p = await b.newPage({ viewport: { width: 1440, height: 1000 } });
+await p.goto('http://127.0.0.1:3100/admin/login', { waitUntil: 'networkidle' });
+await p.fill('input[name=username]', 'admin');
+await p.fill('input[name=password]', 'Nepenthe@2026-Local');
+await p.click('button[type=submit]');
+await p.waitForURL(/\/admin$/, { timeout: 20000 }).catch(()=>{});
+console.log('after login:', p.url());
+await p.goto('http://127.0.0.1:3100/admin/about', { waitUntil: 'networkidle' });
+await p.waitForSelector('.abx-sec', { timeout: 20000 });
+await p.waitForTimeout(400);
+await p.screenshot({ path: 'shots/admin-about.png' });
+await p.screenshot({ path: 'shots/admin-about-full.png', fullPage: true });
+console.log('sections:', await p.locator('.abx-sec').count(), 'play cards:', await p.locator('.abx-play').count());
+await b.close();
