@@ -1330,16 +1330,16 @@
 
 /* 个人卡 */
 .pf {
-  gap: 16px;
+  gap: 17px;
 }
 .pf-head {
   display: flex;
   align-items: flex-start;
-  gap: 14px;
+  gap: 16px;
 }
 .pf-face {
-  width: 62px;
-  height: 62px;
+  width: 66px;
+  height: 66px;
   padding: 2px;
   flex: 0 0 auto;
   border-radius: 50%;
@@ -1367,10 +1367,10 @@
   color: var(--dim);
 }
 .pf-id h2 {
-  margin: 4px 0 0;
+  margin: 2px 0 0;
   font-family: var(--serif);
   font-weight: 900;
-  font-size: 23px;
+  font-size: 22px;
   line-height: 1.2;
   color: var(--ink);
 }
@@ -1378,21 +1378,21 @@
   display: block;
   margin-top: 5px;
   font-family: var(--serif);
-  font-size: 9.5px;
-  letter-spacing: 0.3em;
+  font-size: 10px;
+  letter-spacing: 0.26em;
   text-transform: uppercase;
   color: var(--faint);
 }
 .pf-one {
   margin: 8px 0 0;
-  font-size: 13.5px;
+  font-size: 13px;
   line-height: 1.7;
   color: var(--dim);
 }
 .pf-bio p {
-  margin: 0 0 6px;
+  margin: 0 0 5px;
   font-size: 13px;
-  line-height: 1.9;
+  line-height: 1.8;
   color: var(--dim);
 }
 .pf-bio p:last-child {
@@ -1402,29 +1402,29 @@
   margin-top: auto;
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 18px;
   flex-wrap: wrap;
-  padding-top: 15px;
+  padding-top: 16px;
   border-top: 1px solid var(--line);
 }
 .pf-num {
   display: flex;
   align-items: baseline;
-  gap: 6px;
+  gap: 5px;
   text-decoration: none;
   color: var(--dim);
 }
 .pf-num b {
   font-family: var(--serif);
   font-weight: 900;
-  font-size: 21px;
+  font-size: 20px;
   line-height: 1;
   color: var(--ink);
   font-feature-settings: "tnum";
   transition: color 0.2s;
 }
 .pf-num span {
-  font-size: 11.5px;
+  font-size: 11px;
   color: var(--faint);
 }
 .pf-num:hover b {
@@ -1482,6 +1482,15 @@
 .pf-qr span {
   font-size: 11px;
   color: var(--faint);
+}
+/* 窄屏：数字和联系图标各占一行，别一左一右挤在同一行 */
+@media (max-width: 600px) {
+  .pf-foot {
+    gap: 14px 18px;
+  }
+  .pf-icons {
+    margin-left: 0;
+  }
 }
 
 /* 音乐卡：一张小播放器。点封面和曲名进音乐页，下面三个钮在这张卡上就能播、能暂停、能翻首 */
@@ -1751,14 +1760,14 @@
 
 /* 内容墙 */
 .wall-sec {
-  margin-top: 32px;
+  margin-top: 36px;
 }
 .wall-head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: 14px;
-  margin-bottom: 13px;
+  margin-bottom: 16px;
 }
 .wall-head > span {
   font-size: 11px;
@@ -1768,7 +1777,7 @@
 .wall {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 14px;
+  gap: 18px;
   align-items: stretch;
 }
 @media (min-width: 700px) {
@@ -1786,7 +1795,7 @@
   flex-direction: column;
   height: 100%;
   margin: 0;
-  padding: 18px 18px 20px;
+  padding: 19px 19px 20px;
   border: 1px solid var(--line);
   border-radius: var(--r-lg);
   background: var(--panel);
@@ -1797,29 +1806,31 @@
 .wc:hover {
   border-color: var(--line-2);
   background: rgba(58, 90, 82, 0.06);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(58, 90, 82, 0.09);
 }
 .wc-meta {
   display: flex;
-  gap: 10px;
-  font-size: 10.5px;
-  letter-spacing: 0.1em;
+  gap: 9px;
+  font-size: 11px;
+  letter-spacing: 0.05em;
   color: var(--faint);
   font-feature-settings: "tnum";
 }
 .wc-title {
   display: block;
-  margin: 9px 0 7px;
+  margin: 10px 0 7px;
   font-family: var(--serif);
   font-weight: 900;
-  font-size: 18.5px;
-  line-height: 1.45;
+  font-size: 19px;
+  line-height: 1.5;
   color: var(--ink);
 }
 .wc-sum {
   display: block;
   font-size: 12.5px;
   line-height: 1.85;
-  color: var(--dim);
+  color: var(--faint);
 }
 /* ===== 卡片统一山水封面 ===== */
 .card-scene {
@@ -1843,17 +1854,17 @@
   background: linear-gradient(180deg, rgba(31, 46, 42, 0.1), rgba(31, 46, 42, 0.34));
   pointer-events: none;
 }
-.wc .card-scene { height: 118px; }
-.wc-notes .card-scene { height: 110px; }
-.wc-gallery .card-scene { height: 118px; }
+.wc .card-scene { height: 122px; }
+.wc-notes .card-scene { height: 112px; }
+.wc-gallery .card-scene { height: 122px; }
 .doing-card .card-scene {
   height: 116px;
   width: calc(100% + 44px);
   margin: -22px -22px 14px;
 }
-.wc-big .card-scene { height: 150px; }
+.wc-big .card-scene { height: 168px; }
 .wc-big .wc-title {
-  font-size: 21px;
+  font-size: 21.5px;
 }
 @media (min-width: 1080px) {
   .wc-big {
@@ -2700,9 +2711,9 @@ html.calm *::after {
   isolation: isolate;
   background: var(--ink);
   color: var(--dim);
-  padding: 90px 20px 60px;
+  padding: 88px 20px 56px;
 }
-/* 背景照片：Ken Burns 明显推拉平移，像动态壁纸 */
+/* 背景照片：Ken Burns 缓推，像窗外的云在走 */
 .hero-bg-img {
   position: absolute;
   inset: -8%;
@@ -2710,13 +2721,13 @@ html.calm *::after {
   background-position: center;
   background-repeat: no-repeat;
   z-index: 0;
-  animation: hero-kenburns 20s ease-in-out infinite alternate;
+  animation: hero-kenburns 32s ease-in-out infinite alternate;
   will-change: transform;
 }
 @keyframes hero-kenburns {
-  0%   { transform: scale(1.1) translate(-2%, -1%); }
-  50%  { transform: scale(1.25) translate(2%, 1.5%); }
-  100% { transform: scale(1.15) translate(-1%, 2%); }
+  0%   { transform: scale(1.06) translate(-1%, -0.6%); }
+  50%  { transform: scale(1.12) translate(1%, 0.8%); }
+  100% { transform: scale(1.09) translate(-0.6%, 1.2%); }
 }
 /* 半透明暗遮罩，亮图上白字可读 */
 .hero-bg-overlay {
@@ -2725,8 +2736,8 @@ html.calm *::after {
   z-index: 1;
   pointer-events: none;
   background:
-      radial-gradient(ellipse at 50% 45%, rgba(60, 90, 80, 0.05) 0%, rgba(60, 90, 80, 0.15) 60%, rgba(40, 60, 55, 0.3) 100%),
-      linear-gradient(180deg, rgba(60, 90, 80, 0.08) 0%, rgba(60, 90, 80, 0.02) 40%, rgba(60, 90, 80, 0.2) 100%);
+      radial-gradient(ellipse at 50% 45%, rgba(60, 90, 80, 0.09) 0%, rgba(60, 90, 80, 0.17) 60%, rgba(40, 60, 55, 0.32) 100%),
+      linear-gradient(180deg, rgba(60, 90, 80, 0.1) 0%, rgba(60, 90, 80, 0.03) 40%, rgba(60, 90, 80, 0.22) 100%);
 }
 /* 噪点纹理 */
 .hero-full::before {
@@ -2810,7 +2821,7 @@ html.calm *::after {
   max-width: 760px;
 }
 .hero-pill {
-  padding: 8px 22px;
+  padding: 7px 20px;
   border-radius: var(--r-pill);
   border: 1px solid rgba(90, 130, 120, 0.35);
   background: rgba(255, 255, 255, 0.55);
@@ -2818,28 +2829,28 @@ html.calm *::after {
   -webkit-backdrop-filter: blur(10px);
   font-family: var(--serif);
   font-weight: 900;
-  font-size: 14px;
-  letter-spacing: 0.18em;
+  font-size: 13.5px;
+  letter-spacing: 0.16em;
   color: var(--accent);
-  margin-bottom: 18px;
+  margin-bottom: 16px;
   box-shadow: 0 4px 20px rgba(58, 90, 82, 0.12);
 }
 .hero-hi {
   margin: 6px 0 14px;
   font-size: 12px;
-  letter-spacing: 0.42em;
-  color: rgba(70, 100, 92, 0.6);
+  letter-spacing: 0.34em;
+  color: rgba(63, 92, 84, 0.62);
   text-transform: uppercase;
 }
 .hero-type {
-  margin: 0 0 26px;
+  margin: 0 0 22px;
   font-family: var(--calligraphy);
   font-weight: 400;
-  font-size: clamp(34px, 7vw, 64px);
+  font-size: clamp(33px, 6.6vw, 62px);
   line-height: 1.15;
   letter-spacing: 0.08em;
   color: var(--accent);
-  text-shadow: 0 2px 20px rgba(255, 255, 255, 0.5);
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.62), 0 0 20px rgba(255, 255, 255, 0.8), 0 2px 30px rgba(255, 255, 255, 0.55);
   min-height: 1.3em;
 }
 .hero-type .caret {
@@ -2862,16 +2873,16 @@ html.calm *::after {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 14px;
-  max-width: 560px;
+  gap: 12px;
+  max-width: 520px;
   width: fit-content;
-  padding: 16px 20px;
+  padding: 15px 18px;
   border-radius: var(--r-lg);
   border: 1px solid var(--line);
   background: rgba(255, 255, 255, 0.55);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  box-shadow: 0 8px 32px rgba(58, 90, 82, 0.12);
+  box-shadow: 0 8px 32px rgba(58, 90, 82, 0.09);
 }
 .quote-refresh {
   flex: 0 0 auto;
@@ -2894,8 +2905,8 @@ html.calm *::after {
 .quote-body { text-align: left; min-width: 0; }
 .quote-text {
   margin: 0;
-  font-size: 14.5px;
-  line-height: 1.7;
+  font-size: 14px;
+  line-height: 1.75;
   color: var(--accent);
   transition: opacity 0.22s;
 }
@@ -2952,10 +2963,10 @@ html.calm *::after {
 
 /* 窄屏 */
 @media (max-width: 600px) {
-  .hero-full { padding: 80px 18px 50px; }
+  .hero-full { padding: 84px 18px 54px; }
   .hero-cat { width: 88px; height: 104px; }
-  .hero-type { font-size: clamp(28px, 9vw, 44px); }
-  .hero-quote { padding: 14px 16px; gap: 10px; }
+  .hero-type { font-size: clamp(27px, 8.6vw, 42px); }
+  .hero-quote { padding: 13px 15px; gap: 10px; }
   .quote-text { font-size: 13.5px; }
   .hero-wave { height: 60px; }
   .hero-scroll { bottom: 38px; }
