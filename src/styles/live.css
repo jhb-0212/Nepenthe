@@ -713,6 +713,9 @@
   .st-table th { padding: 7px 6px; font-size: 11.5px; }
   .st-table td { padding: 8px 6px; }
   .st-table td.mono { font-size: 11px; }
+  .st-table td:nth-child(3) { white-space: nowrap; }
+  .st-table th:nth-child(4),
+  .st-table td:nth-child(4) { display: none; }
 }
 
 

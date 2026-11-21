@@ -10,6 +10,17 @@ type Range = (typeof RANGES)[number];
 const dayKey = (d: Date) => d.toISOString().slice(0, 10);
 const WEEK = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
 
+const UA_CN: Record<string, string> = {
+  Edge: 'Edge 浏览器',
+  Chrome: 'Chrome 浏览器',
+  Safari: 'Safari 浏览器',
+  Firefox: 'Firefox 浏览器',
+  Opera: 'Opera 浏览器',
+  MobileSafari: 'Safari 浏览器',
+  WeChat: '微信内置浏览器',
+};
+const uaName = (u: string) => (u ? UA_CN[u] ?? `${u} 浏览器` : '未知');
+
 function fmtTime(d: Date) {
   return d.toISOString().slice(5, 16).replace('T', ' ');
 }
@@ -127,7 +138,7 @@ export default async function AdminStatsPage({ searchParams }: { searchParams: P
         <div className="st-kpi">
           <span>独立访客</span>
           <b>{uniqueVisitors}</b>
-          <i>按「IP + UA + 当日盐」去重</i>
+          <i>按「IP + 浏览器 + 当日盐」去重</i>
         </div>
         <div className="st-kpi">
           <span>单日峰值</span>
@@ -206,7 +217,7 @@ export default async function AdminStatsPage({ searchParams }: { searchParams: P
             <ul className="st-rows">
               {byUa.map((u) => (
                 <li key={u.ua || 'unknown'}>
-                  <span className="st-row-name">{u.ua || '未知'}</span>
+                  <span className="st-row-name">{uaName(u.ua)}</span>
                   <span className="st-row-track">
                     <i style={{ width: `${Math.round((u._count._all / uaMax) * 100)}%` }} />
                   </span>
@@ -224,7 +235,7 @@ export default async function AdminStatsPage({ searchParams }: { searchParams: P
       <section className="st-panel">
         <div className="st-panel-head">
           <h2>来源站点</h2>
-          <span>只有带 Referer 的外链才会记在这里</span>
+          <span>只有带来源页的外链才会记在这里</span>
         </div>
         {byRef.length ? (
           <ul className="st-rows">
@@ -247,7 +258,7 @@ export default async function AdminStatsPage({ searchParams }: { searchParams: P
       <section className="st-panel">
         <div className="st-panel-head">
           <h2>最近访问</h2>
-          <span>最新 10 条，不含 IP</span>
+          <span>最新 10 条，不含 IP 地址</span>
         </div>
         {recent.length ? (
           <div className="st-table-wrap">
@@ -265,7 +276,7 @@ export default async function AdminStatsPage({ searchParams }: { searchParams: P
                   <tr key={String(v.id)}>
                     <td className="mono">{fmtTime(v.createdAt)}</td>
                     <td className="mono">{v.path}</td>
-                    <td>{v.ua || '未知'}</td>
+                    <td>{uaName(v.ua)}</td>
                     <td>{v.ref || '—'}</td>
                   </tr>
                 ))}
@@ -278,7 +289,7 @@ export default async function AdminStatsPage({ searchParams }: { searchParams: P
       </section>
 
       <p className="st-note">
-        只统计前台页面（过滤 bot、后台、静态资源）。访客以「IP + UA + 当日盐」的哈希去重，原始 IP 不入库，跨天不可关联。
+        只统计前台页面（已过滤爬虫、后台与静态资源）。访客按「IP + 浏览器 + 当日盐」的哈希去重，原始 IP 不入库，跨天不可关联。
       </p>
     </div>
   );
