@@ -12,6 +12,8 @@ public/gallery/*
 
 # 运行期数据与产物，不进仓库
 data/
+# 例外：种子数据（站点文案、曲目、在做、相册）是仓库资产，不能跟着 data/ 一起被忽略
+!prisma/seed-data/data/
 shots/
 tsconfig.tsbuildinfo
 *.zip
