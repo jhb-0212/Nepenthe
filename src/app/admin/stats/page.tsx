@@ -8,6 +8,8 @@ const RANGES = [7, 14, 30] as const;
 type Range = (typeof RANGES)[number];
 
 const dayKey = (d: Date) => d.toISOString().slice(0, 10);
+const BJ = 8 * 3600 * 1000;
+const bjKey = (d: Date) => new Date(d.getTime() + BJ).toISOString().slice(0, 10);
 const WEEK = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
 
 const UA_CN: Record<string, string> = {
@@ -20,9 +22,13 @@ const UA_CN: Record<string, string> = {
   WeChat: '微信内置浏览器',
 };
 const uaName = (u: string) => (u ? UA_CN[u] ?? `${u} 浏览器` : '未知');
+const pct = (n: number, total: number) => {
+  const v = Math.round((n / (total || 1)) * 1000) / 10;
+  return `${Number.isInteger(v) ? v : v.toFixed(1)}%`;
+};
 
 function fmtTime(d: Date) {
-  return d.toISOString().slice(5, 16).replace('T', ' ');
+  return new Date(d.getTime() + BJ).toISOString().slice(5, 16).replace('T', ' ');
 }
 
 export default async function AdminStatsPage({ searchParams }: { searchParams: Promise<{ d?: string }> }) {
@@ -32,9 +38,9 @@ export default async function AdminStatsPage({ searchParams }: { searchParams: P
   const range: Range = (RANGES.find((r) => String(r) === sp.d) ?? 14) as Range;
 
   const now = Date.now();
-  const from = new Date(now - (range - 1) * 864e5);
-  from.setUTCHours(0, 0, 0, 0);
-  const todayKey = dayKey(new Date(now));
+  // 访问按北京时间切天，统计也用北京时间，避免「今天」漏掉凌晨的记录
+  const from = new Date(`${bjKey(new Date(now - (range - 1) * 864e5))}T00:00:00.000Z`);
+  const todayKey = bjKey(new Date(now));
 
   const [byDay, rangeVisits, byPath, byUa, byRef, total, recent] = await Promise.all([
     prisma.visit.groupBy({
@@ -105,8 +111,36 @@ export default async function AdminStatsPage({ searchParams }: { searchParams: P
 
   // 小时分布
   const hours = Array.from({ length: 24 }, () => 0);
-  for (const v of rangeVisits) hours[v.createdAt.getUTCHours()] += 1;
+  for (const v of rangeVisits) hours[new Date(v.createdAt.getTime() + BJ).getUTCHours()] += 1;
   const hourMax = Math.max(1, ...hours);
+
+  // 页面中文名：文章详情按标题显示
+  const slugs = byPath
+    .map((p) => p.path)
+    .filter((p) => p.startsWith('/writing/'))
+    .map((p) => p.slice('/writing/'.length));
+  const titles = slugs.length
+    ? await prisma.post.findMany({ where: { slug: { in: slugs } }, select: { slug: true, title: true } })
+    : [];
+  const titleBySlug = new Map(titles.map((t) => [t.slug, t.title]));
+  const PAGE_CN: Record<string, string> = {
+    '/': '首页',
+    '/about': '关于',
+    '/writing': '文章',
+    '/notes': '随记',
+    '/novels': '小说',
+    '/gallery': '风月册',
+    '/archive': '归档',
+    '/music': '音乐',
+    '/doing': '在做',
+    '/wall': '留言墙',
+    '/search': '搜索',
+  };
+  const pageName = (path: string) => {
+    if (PAGE_CN[path]) return PAGE_CN[path];
+    if (path.startsWith('/writing/')) return titleBySlug.get(path.slice('/writing/'.length)) ?? '文章';
+    return path;
+  };
 
   // 迷你走势
   const spark = series
@@ -221,7 +255,7 @@ export default async function AdminStatsPage({ searchParams }: { searchParams: P
       <section className="st-panel">
         <div className="st-panel-head">
           <h2>访问时段</h2>
-          <span>近 {range} 天 · 按小时统计（UTC）</span>
+          <span>近 {range} 天 · 按小时统计（北京时间）</span>
         </div>
         {rangeTotal > 0 ? (
           <div className="st-hours">
@@ -250,13 +284,13 @@ export default async function AdminStatsPage({ searchParams }: { searchParams: P
             <ul className="st-rows">
               {byPath.map((p) => (
                 <li key={p.path}>
-                  <span className="st-row-name">{p.path}</span>
+                  <span className="st-row-name" title={p.path}>{pageName(p.path)}</span>
                   <span className="st-row-track">
                     <i style={{ width: `${Math.round((p._count._all / pathMax) * 100)}%` }} />
                   </span>
                   <em>
                     {p._count._all}
-                    <small>{Math.round((p._count._all / (rangeTotal || 1)) * 100)}%</small>
+                    <small>{pct(p._count._all, rangeTotal)}</small>
                   </em>
                 </li>
               ))}
@@ -301,7 +335,7 @@ export default async function AdminStatsPage({ searchParams }: { searchParams: P
                   <li key={u.ua || 'unknown'}>
                     <i style={{ background: DONUT_COLORS[i % DONUT_COLORS.length] }} />
                     <span className="st-legend-name">{uaName(u.ua)}</span>
-                    <em>{Math.round((u._count._all / uaTotal) * 100)}%</em>
+                    <em>{pct(u._count._all, uaTotal)}</em>
                   </li>
                 ))}
               </ul>
@@ -356,7 +390,7 @@ export default async function AdminStatsPage({ searchParams }: { searchParams: P
                 {recent.map((v) => (
                   <tr key={String(v.id)}>
                     <td className="mono">{fmtTime(v.createdAt)}</td>
-                    <td className="mono">{v.path}</td>
+                    <td title={v.path}>{pageName(v.path)}</td>
                     <td>{uaName(v.ua)}</td>
                     <td>{v.ref || '—'}</td>
                   </tr>
