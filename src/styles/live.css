@@ -698,6 +698,78 @@
 
 .st-note { margin: 18px 0 40px; font-size: 12px; line-height: 1.9; color: var(--faint); }
 
+.st-spark { width: 100%; height: 26px; margin-top: 4px; overflow: visible; }
+
+.st-hours {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 92px;
+  padding-top: 4px;
+}
+.st-hour {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  height: 100%;
+}
+.st-hour-track {
+  flex: 1 1 auto;
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  border-bottom: 1px solid var(--line-2);
+}
+.st-hour-track i {
+  display: block;
+  width: 100%;
+  border-radius: 3px 3px 0 0;
+  background: linear-gradient(180deg, var(--accent-light), var(--accent));
+}
+.st-hour span {
+  height: 12px;
+  font-size: 9px;
+  color: var(--faint);
+  font-variant-numeric: tabular-nums;
+}
+.st-hour:hover .st-hour-track i { background: var(--accent); }
+
+.st-donut-wrap { display: flex; align-items: center; gap: 18px; }
+.st-donut { position: relative; width: 118px; flex: 0 0 auto; }
+.st-donut svg { display: block; width: 100%; height: auto; }
+.st-donut-mid {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  pointer-events: none;
+}
+.st-donut-mid b {
+  font-family: var(--serif);
+  font-size: 22px;
+  line-height: 1;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+.st-donut-mid span { margin-top: 2px; font-size: 10.5px; color: var(--faint); }
+.st-legend { list-style: none; margin: 0; padding: 0; flex: 1 1 auto; min-width: 0; display: grid; gap: 8px; }
+.st-legend li {
+  display: grid;
+  grid-template-columns: 8px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+}
+.st-legend i { width: 8px; height: 8px; border-radius: 50%; }
+.st-legend-name { color: var(--dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.st-legend em { font-style: normal; color: var(--faint); font-variant-numeric: tabular-nums; }
+
+.st-rows em small { margin-left: 5px; font-size: 10px; color: var(--line-2); }
+
 @media (max-width: 900px) {
   .st-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .st-split { grid-template-columns: 1fr; }
@@ -716,6 +788,10 @@
   .st-table td:nth-child(3) { white-space: nowrap; }
   .st-table th:nth-child(4),
   .st-table td:nth-child(4) { display: none; }
+  .st-hours { height: 84px; gap: 2px; }
+  .st-hour span { font-size: 8px; }
+  .st-donut-wrap { flex-direction: column; align-items: stretch; gap: 14px; }
+  .st-donut { width: 132px; margin: 0 auto; }
 }
 
 

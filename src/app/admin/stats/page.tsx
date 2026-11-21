@@ -45,7 +45,7 @@ export default async function AdminStatsPage({ searchParams }: { searchParams: P
     }),
     prisma.visit.findMany({
       where: { day: { gte: from } },
-      select: { day: true, visitor: true },
+      select: { day: true, visitor: true, createdAt: true },
     }),
     prisma.visit.groupBy({
       by: ['path'],
@@ -100,9 +100,35 @@ export default async function AdminStatsPage({ searchParams }: { searchParams: P
   const uniqueVisitors = new Set(rangeVisits.map((v) => v.visitor)).size;
   const peak = series.reduce((a, b) => (b.n > a.n ? b : a), series[0]);
   const pathMax = Math.max(1, ...byPath.map((p) => p._count._all));
-  const uaMax = Math.max(1, ...byUa.map((u) => u._count._all));
   const refMax = Math.max(1, ...byRef.map((r) => r._count._all));
   const activeDays = series.filter((s) => s.n > 0).length;
+
+  // 小时分布
+  const hours = Array.from({ length: 24 }, () => 0);
+  for (const v of rangeVisits) hours[v.createdAt.getUTCHours()] += 1;
+  const hourMax = Math.max(1, ...hours);
+
+  // 迷你走势
+  const spark = series
+    .map((s, i) => {
+      const x = series.length > 1 ? 3 + (i / (series.length - 1)) * 114 : 60;
+      const y = 27 - (s.n / max) * 23;
+      return `${x.toFixed(1)},${y.toFixed(1)}`;
+    })
+    .join(' ');
+
+  // 浏览器占比
+  const uaTotal = byUa.reduce((s, u) => s + u._count._all, 0) || 1;
+  const DONUT_R = 44;
+  const DONUT_C = 2 * Math.PI * DONUT_R;
+  const DONUT_COLORS = ['#3a5a52', '#5a8a7a', '#8fb0a5', '#c8d4cf'];
+  let uaOffset = 0;
+  const uaSlices = byUa.map((u, i) => {
+    const len = (u._count._all / uaTotal) * DONUT_C;
+    const slice = { key: u.ua || 'unknown', len, offset: uaOffset, color: DONUT_COLORS[i % DONUT_COLORS.length] };
+    uaOffset += len;
+    return slice;
+  });
 
   return (
     <div className="admin-shell">
@@ -134,6 +160,13 @@ export default async function AdminStatsPage({ searchParams }: { searchParams: P
         <div className="st-kpi">
           <span>近 {range} 天</span>
           <b>{rangeTotal}</b>
+          {rangeTotal > 0 ? (
+            <svg className="st-spark" viewBox="0 0 120 30" preserveAspectRatio="none" aria-hidden="true">
+              <polyline points={spark} fill="none" stroke="var(--accent-light)" strokeWidth="1.6" strokeLinejoin="round" />
+            </svg>
+          ) : (
+            <i>区间内暂无访问</i>
+          )}
         </div>
         <div className="st-kpi">
           <span>独立访客</span>
@@ -179,8 +212,30 @@ export default async function AdminStatsPage({ searchParams }: { searchParams: P
           </div>
         ) : (
           <p className="st-empty">
-            这段时间还没有访问记录。前台打开几次（bot 会被过滤），这里就会长出柱子。
+            这段时间还没有访问记录。前台打开几次（爬虫会被过滤），这里就会长出柱子。
           </p>
+        )}
+      </section>
+
+      {/* 时段分布 */}
+      <section className="st-panel">
+        <div className="st-panel-head">
+          <h2>访问时段</h2>
+          <span>近 {range} 天 · 按小时统计（UTC）</span>
+        </div>
+        {rangeTotal > 0 ? (
+          <div className="st-hours">
+            {hours.map((n, h) => (
+              <div className="st-hour" key={h} title={`${h} 点 · ${n} 次`}>
+                <div className="st-hour-track">
+                  <i style={{ height: `${n ? Math.max(6, Math.round((n / hourMax) * 100)) : 0}%` }} />
+                </div>
+                <span>{h % 3 === 0 ? `${h}` : ''}</span>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="st-empty">暂无访问，时段分布还画不出来。</p>
         )}
       </section>
 
@@ -199,7 +254,10 @@ export default async function AdminStatsPage({ searchParams }: { searchParams: P
                   <span className="st-row-track">
                     <i style={{ width: `${Math.round((p._count._all / pathMax) * 100)}%` }} />
                   </span>
-                  <em>{p._count._all}</em>
+                  <em>
+                    {p._count._all}
+                    <small>{Math.round((p._count._all / (rangeTotal || 1)) * 100)}%</small>
+                  </em>
                 </li>
               ))}
             </ul>
@@ -214,17 +272,40 @@ export default async function AdminStatsPage({ searchParams }: { searchParams: P
             <span>近 {range} 天</span>
           </div>
           {byUa.length ? (
-            <ul className="st-rows">
-              {byUa.map((u) => (
-                <li key={u.ua || 'unknown'}>
-                  <span className="st-row-name">{uaName(u.ua)}</span>
-                  <span className="st-row-track">
-                    <i style={{ width: `${Math.round((u._count._all / uaMax) * 100)}%` }} />
-                  </span>
-                  <em>{u._count._all}</em>
-                </li>
-              ))}
-            </ul>
+            <div className="st-donut-wrap">
+              <div className="st-donut">
+                <svg viewBox="0 0 120 120" aria-hidden="true">
+                  <circle cx="60" cy="60" r={DONUT_R} fill="none" stroke="var(--void2)" strokeWidth="13" />
+                  {uaSlices.map((s) => (
+                    <circle
+                      key={s.key}
+                      cx="60"
+                      cy="60"
+                      r={DONUT_R}
+                      fill="none"
+                      stroke={s.color}
+                      strokeWidth="13"
+                      strokeDasharray={`${s.len} ${DONUT_C - s.len}`}
+                      strokeDashoffset={-s.offset}
+                      transform="rotate(-90 60 60)"
+                    />
+                  ))}
+                </svg>
+                <div className="st-donut-mid">
+                  <b>{byUa.reduce((s, u) => s + u._count._all, 0)}</b>
+                  <span>次访问</span>
+                </div>
+              </div>
+              <ul className="st-legend">
+                {byUa.map((u, i) => (
+                  <li key={u.ua || 'unknown'}>
+                    <i style={{ background: DONUT_COLORS[i % DONUT_COLORS.length] }} />
+                    <span className="st-legend-name">{uaName(u.ua)}</span>
+                    <em>{Math.round((u._count._all / uaTotal) * 100)}%</em>
+                  </li>
+                ))}
+              </ul>
+            </div>
           ) : (
             <p className="st-empty">暂无数据。</p>
           )}
