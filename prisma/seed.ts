@@ -249,6 +249,21 @@ async function seedAbout() {
   console.log('about: 写入默认文案');
 }
 
+async function seedPages() {
+  // 各页页头文案存在 SiteSetting 的 pages 键；库里没有就写一份默认值，
+  // 之后在后台 /admin/pages 改，前台读库里这份。
+  const exists = await prisma.siteSetting.findUnique({ where: { key: 'pages' } });
+  if (exists) {
+    console.log('pages: 已存在，跳过');
+    return;
+  }
+  const { DEFAULT_PAGES } = await import('../src/lib/pages');
+  await prisma.siteSetting.create({
+    data: { key: 'pages', value: DEFAULT_PAGES as unknown as Prisma.InputJsonObject },
+  });
+  console.log('pages: 写入默认文案');
+}
+
 async function main() {
   console.log(`seed from ${ROOT}`);
   await seedPosts();
@@ -257,6 +272,7 @@ async function main() {
   await seedPhotos();
   await seedSite();
   await seedAbout();
+  await seedPages();
   console.log('done.');
 }
 
