@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/prisma';
 import { requireAdmin } from '@/lib/auth';
-import { getSite, type SiteConfig } from '@/lib/site';
+import { getSite, type SiteConfig, type FeaturedProject } from '@/lib/site';
 
 export type SiteState = { ok?: boolean; error?: string; message?: string };
 
@@ -48,6 +48,41 @@ export async function saveSite(_prev: SiteState, form: FormData): Promise<SiteSt
   if (!doing.ok) return { error: doing.error };
   const facts = parseJsonArray(String(form.get('facts') ?? ''), '数字卡片');
   if (!facts.ok) return { error: facts.error };
+  const featuredRaw = parseJsonArray(String(form.get('featuredProjects') ?? ''), '精选作品');
+  if (!featuredRaw.ok) return { error: featuredRaw.error };
+
+  // 精选作品逐条校验：标题必填，链接只允许站内路径或 https 绝对地址
+  const featuredProjects: FeaturedProject[] = [];
+  for (const [i, item] of featuredRaw.value.entries()) {
+    if (!item || typeof item !== 'object' || Array.isArray(item)) {
+      return { error: `精选作品第 ${i + 1} 条要是一个对象` };
+    }
+    const row = item as Partial<FeaturedProject>;
+    const title = String(row.title ?? '').trim();
+    const summary = String(row.summary ?? '').trim();
+    const category = String(row.category ?? '').trim();
+    const cover = String(row.cover ?? '').trim();
+    const href = String(row.href ?? '').trim();
+    const tags = Array.isArray(row.tags) ? row.tags.map((t) => String(t).trim()).filter(Boolean) : [];
+    if (!title) return { error: `精选作品第 ${i + 1} 条缺标题` };
+    if (!href) return { error: `精选作品第 ${i + 1} 条缺链接` };
+    if (!/^\/(?!\/)/.test(href) && !/^https:\/\/|^http:\/\//.test(href)) {
+      return { error: `精选作品第 ${i + 1} 条链接要是 / 开头的站内路径或 http(s) 地址` };
+    }
+    if (cover && !/^\/(?!\/)/.test(cover) && !/^https:\/\/|^http:\/\//.test(cover)) {
+      return { error: `精选作品第 ${i + 1} 条封面要是 / 开头的站内路径或 http(s) 地址` };
+    }
+    featuredProjects.push({
+      title,
+      summary,
+      category,
+      cover,
+      href,
+      tags,
+      featured: Boolean(row.featured),
+      sort: Number.isFinite(Number(row.sort)) ? Number(row.sort) : i,
+    });
+  }
 
   const next: SiteConfig = {
     ...current,
@@ -71,6 +106,7 @@ export async function saveSite(_prev: SiteState, form: FormData): Promise<SiteSt
     bio: bio.value as string[],
     doing: doing.value as SiteConfig['doing'],
     facts: facts.value as SiteConfig['facts'],
+    featuredProjects,
   };
 
   await prisma.siteSetting.upsert({

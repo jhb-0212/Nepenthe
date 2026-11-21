@@ -12,6 +12,11 @@ public/gallery/*
 
 # 运行期数据与产物，不进仓库
 data/
+# 种子数据不是运行期数据，要进仓库
+!prisma/seed-data/data/
 shots/
 tsconfig.tsbuildinfo
 *.zip
+# 本地排查用脚本
+shots.mjs
+audit.mjs

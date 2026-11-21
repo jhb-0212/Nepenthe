@@ -75,6 +75,14 @@ export const listAlbums = () =>
     include: { photos: { orderBy: [{ sort: 'asc' }, { date: 'desc' }] } },
   });
 
+/** 首页生活切片用：最近的照片（真实图，不拿背景图充数） */
+export const listRecentPhotos = (take = 3) =>
+  prisma.photo.findMany({
+    orderBy: [{ date: 'desc' }, { sort: 'asc' }],
+    take,
+    include: { album: { select: { title: true, slug: true } } },
+  });
+
 export const countPhotos = () => prisma.photo.count();
 
 export const listTracks = () => prisma.track.findMany({ orderBy: { sort: 'asc' } });

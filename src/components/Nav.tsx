@@ -16,15 +16,28 @@ const BG_SWATCHES = [
 
 const ITEMS = [
   { href: '/', label: '首页' },
-  { href: '/writing', label: '文章' },
-  { href: '/notes', label: '随记' },
-  { href: '/novels', label: '小说' },
-  { href: '/gallery', label: '相册' },
-  { href: '/archive', label: '归档' },
-  { href: '/music', label: '音乐' },
-  { href: '/doing', label: '在做' },
-  { href: '/wall', label: '留言' },
-  { href: '/about', label: '关于我' },
+];
+
+/** 分组导航：一级只留 5 项，栏目收进「创作 / 生活」两组 */
+const GROUPS: { label: string; items: { href: string; label: string }[] }[] = [
+  {
+    label: '创作',
+    items: [
+      { href: '/writing', label: '文章' },
+      { href: '/notes', label: '随记' },
+      { href: '/novels', label: '小说' },
+      { href: '/archive', label: '归档' },
+    ],
+  },
+  {
+    label: '生活',
+    items: [
+      { href: '/gallery', label: '相册' },
+      { href: '/music', label: '音乐' },
+      { href: '/doing', label: '在做' },
+      { href: '/wall', label: '留言' },
+    ],
+  },
 ];
 
 export default function Nav({ name, en, portfolioUrl }: Props) {
@@ -39,7 +52,7 @@ export default function Nav({ name, en, portfolioUrl }: Props) {
     const nav = navRef.current;
     if (!nav) return;
     const onScroll = () => {
-      const hasHero = document.querySelector('.hero-full');
+      const hasHero = document.querySelector('.hero, .hero-full');
       if (!hasHero || window.scrollY > 40) nav.classList.add('is-fixed');
       else nav.classList.remove('is-fixed');
     };
@@ -122,15 +135,49 @@ export default function Nav({ name, en, portfolioUrl }: Props) {
               {it.label}
             </Link>
           ))}
-          <a
-            className="ext"
-            href={portfolioUrl || '#'}
-            data-ext="portfolio"
-            target={portfolioUrl ? '_blank' : undefined}
-            rel={portfolioUrl ? 'noopener' : undefined}
-          >
-            作品集
-          </a>
+
+          {GROUPS.map((g) => {
+            const active = g.items.some((it) => matched(it.href));
+            return (
+              <div key={g.label} className={`menu-group${active ? ' is-active' : ''}`}>
+                <button
+                  className="menu-group__btn"
+                  type="button"
+                  aria-haspopup="true"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Escape') e.currentTarget.blur();
+                  }}
+                >
+                  {g.label}
+                  <svg className="menu-group__caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+                    <path d="M6 9l6 6 6-6" />
+                  </svg>
+                </button>
+                <div className="menu-group__panel">
+                  {g.items.map((it) => (
+                    <Link
+                      key={it.href}
+                      href={it.href}
+                      aria-current={matched(it.href) ? 'page' : undefined}
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      {it.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+
+          <Link href="/about" aria-current={matched('/about') ? 'page' : undefined} onClick={() => setMenuOpen(false)}>
+            关于我
+          </Link>
+
+          {portfolioUrl ? (
+            <a className="ext" href={portfolioUrl} data-ext="portfolio" target="_blank" rel="noopener noreferrer">
+              作品集
+            </a>
+          ) : null}
         </nav>
 
         <button

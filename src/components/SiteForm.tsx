@@ -90,6 +90,15 @@ export default function SiteForm({ site }: { site: SiteConfig }) {
         数字卡片（JSON 数组：k / v）
         <textarea name="facts" defaultValue={JSON.stringify(site.facts, null, 2)} style={{ minHeight: 120 }} />
       </label>
+      <label>
+        首页精选作品（JSON 数组：title / summary / category / cover / href / tags / sort）
+        <textarea
+          name="featuredProjects"
+          defaultValue={JSON.stringify(site.featuredProjects ?? [], null, 2)}
+          style={{ minHeight: 200 }}
+          placeholder='[{"title":"作品名","summary":"一句话","category":"AI","cover":"/works/a.jpg","href":"https://…","tags":["Next.js"],"sort":0}]'
+        />
+      </label>
 
       {state.error ? <div className="admin-banner err">{state.error}</div> : null}
       {state.ok ? <div className="admin-banner ok">{state.message}</div> : null}

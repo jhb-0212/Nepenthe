@@ -16,6 +16,18 @@ export type DoingConfig = {
   noteLong: string;
 };
 
+/** 首页精选作品：存在 settings.site 的 featuredProjects 字段里，不单独建表 */
+export type FeaturedProject = {
+  title: string;
+  summary: string;
+  category: string;
+  cover: string;
+  href: string;
+  tags: string[];
+  featured?: boolean;
+  sort?: number;
+};
+
 export type ContactConfig = {
   github: string;
   email: string;
@@ -41,6 +53,7 @@ export type SiteConfig = {
   tracks: TrackConfig[];
   doing: DoingConfig[];
   facts: { k: string; v: string }[];
+  featuredProjects: FeaturedProject[];
 };
 
 // 数据库连不上时的兜底：保证 404、错误页也有一套能看的文案
@@ -62,6 +75,7 @@ export const DEFAULT_SITE: SiteConfig = {
   tracks: [],
   doing: [],
   facts: [],
+  featuredProjects: [],
 };
 
 /** 站点配置：库里有 settings.site 就用库里的，缺字段用默认补齐 */
@@ -78,6 +92,9 @@ export async function getSite(): Promise<SiteConfig> {
       tracks: Array.isArray(value.tracks) ? value.tracks : DEFAULT_SITE.tracks,
       doing: Array.isArray(value.doing) ? value.doing : DEFAULT_SITE.doing,
       facts: Array.isArray(value.facts) ? value.facts : DEFAULT_SITE.facts,
+      featuredProjects: Array.isArray(value.featuredProjects)
+        ? (value.featuredProjects as FeaturedProject[])
+        : DEFAULT_SITE.featuredProjects,
     };
   } catch {
     return DEFAULT_SITE;
