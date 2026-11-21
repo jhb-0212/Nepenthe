@@ -251,48 +251,10 @@ export default function AboutForm({ about: initial }: { about: AboutConfig }) {
           + 加一组
         </button>
 
-        <div className="abx-sub">代表作（建议 2–4 张，链到真实存在的页面）</div>
-        {about.projects.map((p, i) => (
-          <div className="abx-play" key={i}>
-            <ImageField value={p.cover} onChange={(url) => rowPatch('projects', i, { cover: url })} />
-            <div className="abx-play-body">
-              <div className="abx-row">
-                <label>
-                  名称
-                  <input value={p.name} onChange={(e) => rowPatch('projects', i, { name: e.target.value })} />
-                </label>
-                <label className="grow">
-                  链接
-                  <input value={p.href} onChange={(e) => rowPatch('projects', i, { href: e.target.value })} placeholder="/novels/xxx" />
-                </label>
-                <RowTools k="projects" i={i} n={about.projects.length} />
-              </div>
-              <label>
-                简介
-                <textarea
-                  value={p.desc}
-                  onChange={(e) => rowPatch('projects', i, { desc: e.target.value })}
-                  style={{ minHeight: 56 }}
-                />
-              </label>
-              <label>
-                技术标签
-                <input
-                  value={toText(p.tech)}
-                  onChange={(e) => rowPatch('projects', i, { tech: toList(e.target.value) })}
-                  placeholder="Next.js、Prisma"
-                />
-              </label>
-            </div>
-          </div>
-        ))}
-        <button
-          type="button"
-          className="abx-add"
-          onClick={() => addRow('projects', { name: '', desc: '', tech: [], href: '', cover: '' })}
-        >
-          + 加一个项目
-        </button>
+        <div className="abx-sub">
+          代表作不在这里改了：三张项目卡已经写成文章《我在做的三个东西》（/writing/three-things），
+          项目卡的内容由那篇文章承接，关于页只留一行入口。
+        </div>
       </section>
 
       {/* ---------- 玩什么 ---------- */}

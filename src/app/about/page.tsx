@@ -150,34 +150,10 @@ export default async function AboutPage() {
             </div>
 
             {about.projects.length ? (
-              <div className="proj-grid">
-                {about.projects.map((p, i) => (
-                  <Link key={`${p.name}-${i}`} className="proj-card" href={p.href}>
-                    {p.cover ? (
-                      <div className="proj-cover">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={p.cover} alt={`${p.name} 封面`} loading="lazy" />
-                      </div>
-                    ) : null}
-                    <div className="proj-body">
-                      <div className="proj-name">
-                        {p.name}
-                        <span className="proj-go" aria-hidden="true">
-                          →
-                        </span>
-                      </div>
-                      {p.desc ? <p className="proj-desc">{p.desc}</p> : null}
-                      {p.tech.length ? (
-                        <div className="proj-tech">
-                          {p.tech.map((t) => (
-                            <span key={t}>{t}</span>
-                          ))}
-                        </div>
-                      ) : null}
-                    </div>
-                  </Link>
-                ))}
-              </div>
+              <p className="proj-link">
+                手上这几件东西的来龙去脉，写成了一篇：
+                <Link href="/writing/three-things">《我在做的三个东西》</Link>
+              </p>
             ) : null}
           </section>
         ) : null}

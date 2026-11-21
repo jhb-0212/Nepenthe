@@ -1081,47 +1081,24 @@
   border-top: 1px dashed var(--line-2);
 }
 
-/* --- 技术与创造：代表作 --- */
-.proj-grid {
-  display: grid;
-  gap: 12px;
-  margin-top: 24px;
+/* --- 技术与创造：代表作改由文章承接，这里只留一行入口 --- */
+.proj-link {
+  margin: 24px 0 0;
+  padding-top: 18px;
+  border-top: 1px dashed var(--line-2);
+  font-size: 14px;
+  line-height: 1.9;
+  color: var(--dim);
 }
-.proj-card {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  overflow: hidden;
-  text-decoration: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-.proj-card:hover { border-color: var(--accent-light); box-shadow: 0 8px 22px rgba(40, 48, 44, 0.06); }
-.proj-cover { aspect-ratio: 21 / 9; overflow: hidden; background: var(--accent-bg); }
-.proj-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.proj-body { padding: 17px 20px 18px; display: grid; gap: 7px; }
-.proj-name {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
+.proj-link a {
   font-family: var(--serif);
   font-weight: 900;
-  font-size: 17px;
-  color: var(--ink);
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid var(--line);
+  transition: border-color 0.2s;
 }
-.proj-go { font-size: 13px; color: var(--faint); transition: color 0.2s, transform 0.2s; }
-.proj-card:hover .proj-go { color: var(--accent); transform: translateX(2px); }
-.proj-desc { margin: 0; font-size: 13.5px; line-height: 1.9; color: var(--dim); }
-.proj-tech { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
-.proj-tech span {
-  font-size: 11.5px;
-  letter-spacing: 0.04em;
-  color: var(--faint);
-  border: 1px solid var(--line-2);
-  border-radius: 3px;
-  padding: 2px 8px;
-}
+.proj-link a:hover { border-color: var(--accent); }
 
 /* --- 关于忘忧居 --- */
 .story-title {
